@@ -100,9 +100,9 @@ class CustomHeader extends Component<{}, CustomHeaderState> {
                     </Menu>
                     <UserSection>
                         <AuthList>
-                            <StyledLink to="/auth" style={{ textDecoration: 'none' }}><Button shape="round" size="large" >Login</Button></StyledLink>
+                            <StyledLink to="/authentication" style={{ textDecoration: 'none' }}><Button shape="round" size="large" >Login</Button></StyledLink>
                             <span className='mx-2'></span>
-                            <StyledLink to="/auth" style={{ textDecoration: 'none', color: '#fff' }}><Button shape="round" size="large" type="primary">Register</Button></StyledLink>
+                            <StyledLink to="/authentication" style={{ textDecoration: 'none', color: '#fff' }}><Button shape="round" size="large" type="primary">Register</Button></StyledLink>
                         </AuthList>
                     </UserSection>
                 </Nav>
