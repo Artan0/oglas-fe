@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import CustomLayout from "../layouts/layout";
 import AdCard from "../components/AdCard";
 import { Container } from "react-bootstrap";
-import rentCarImage from "../assets/images/rent_car.jpg"
+import rentCarImage from "../assets/images/rent_car.png"
 import coloredMapImage from "../assets/images/colored_map.jpg";
 import carImage from "../assets/images/car.jpg"
 
@@ -71,7 +71,8 @@ const ImageContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border-radius: 50px;
+  border-radius: 35px;
+  margin-top:-45px;
 `;
 
 const SearchForm = styled(Form)`
@@ -145,8 +146,8 @@ class LandingPage extends Component {
     render() {
         return (
             <CustomLayout>
-                <LandingPageContainer>
-                    <ImageContainer>
+                <LandingPageContainer className="pt-3" >
+                    <ImageContainer className="mt-5">
                         <Slogan>Your Slogan Goes Here</Slogan>
                         <SearchForm className="mt-4" layout="inline" onFinish={this.handleSearch}>
                             <FormItem name="category">

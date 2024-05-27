@@ -1,20 +1,22 @@
-import { Component } from "react";
-import { Header } from 'antd/es/layout/layout';
-import { Button } from 'antd';
+import React, { Component } from "react";
+import { Layout, Menu, Button } from 'antd';
 import { Link } from 'react-router-dom';
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
-const StyledHeader = styled(Header)`
+const { Header } = Layout;
+
+const StyledHeader = styled(Header) <{ isFixed: boolean }>`
     text-align: center;
     color: #fff;
-    height: 64px;
     padding: 0 48px;
-    background-color: #0a2540;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    position: relative;
+    width: 100%;
+    box-shadow: 2px 0px 5px 2px lightgray;
+    background-color: white;
     z-index: 10; 
+    position: ${(props) => (props.isFixed ? 'fixed' : 'absolute')};
+    top: ${(props) => (props.isFixed ? '0' : 'auto')};
+    transition: top 0.4s ease-out, opacity 0.4s ease-out, background-color 0.4s ease-out;
+    opacity: ${(props) => (props.isFixed ? 0.95 : 1)};
 `;
 
 const Logo = styled.img`
@@ -25,80 +27,86 @@ const Logo = styled.img`
 const Nav = styled.nav`
     display: flex;
     justify-content: space-between;
-    flex-grow: 1;
     align-items: center;
-`;
-
-const NavList = styled.ul`
-    list-style: none;
-    display: flex;
-    justify-content: space-evenly;
-    width: 50%;
-    padding: 0;
-    margin: 0;
-    font-weight: bold;
-
-    @media (max-width: 768px) {
-        flex-direction: column;
-        width: 100%;
-    }
-`;
-
-const NavItem = styled.li`
-    display: inline-block;
-
-    @media (max-width: 768px) {
-        padding: 10px 0;
-    }
 `;
 
 const UserSection = styled.div`
     display: flex;
     align-items: center;
-
-    @media (max-width: 768px) {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-    }
 `;
 
-const AuthList = styled.ul`
-    list-style: none;
+const AuthList = styled.div`
     display: flex;
     padding: 0;
     margin: 0;
-
-    @media (max-width: 768px) {
-    }
 `;
 
+const StyledLink = styled(Link)`
+    text-decoration: none;
+`
 
-class CustomHeader extends Component {
+const MenuItem = styled(Menu.Item)`
+    font-size: 18px;
+`;
+
+interface CustomHeaderState {
+    isFixed: boolean;
+}
+
+class CustomHeader extends Component<{}, CustomHeaderState> {
+    constructor(props: {}) {
+        super(props);
+        this.state = {
+            isFixed: false,
+        };
+    }
+
+    componentDidMount() {
+        window.addEventListener('scroll', this.handleScroll);
+        this.handleScroll();
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.handleScroll);
+    }
+
+    handleScroll = () => {
+        const isScrolled = window.scrollY > 100;
+        this.setState({ isFixed: isScrolled });
+    };
 
     render() {
         return (
-            <>
-                <StyledHeader>
-                    <Nav>
-                        <Logo alt="Logo" />
-
-                        <NavList>
-                            <NavItem><Link to="/" style={{ textDecoration: 'none', color: '#fff' }}>Home</Link></NavItem>
-                            <NavItem><Link to="/contact" style={{ textDecoration: 'none', color: '#fff' }}>Contact Us</Link></NavItem>
-                            <NavItem><Link to="/about" style={{ textDecoration: 'none', color: '#fff' }}>About Us</Link></NavItem>
-                        </NavList>
-                        <UserSection>
-                            <AuthList>
-                                <Button type="primary" ><Link to="/auth" style={{ textDecoration: 'none', color: '#fff' }}>Login</Link></Button>
-                                <span className='mx-2'></span>
-                                <Button type="primary" ><Link to="/auth" style={{ textDecoration: 'none', color: '#fff' }}>Register</Link></Button>
-                            </AuthList>
-                        </UserSection>
-                    </Nav>
-
-                </StyledHeader>
-            </>
+            <StyledHeader isFixed={this.state.isFixed}>
+                <Nav>
+                    {/* <Logo src="/logo.png" alt="Logo" /> */}
+                    <h1 className="text-black">Oglas</h1>
+                    <Menu className="d-flex justify-content-center" theme="light" mode="horizontal" style={{ minWidth: 0, flex: "auto" }}>
+                        <MenuItem key="home">
+                            <StyledLink to="/">Home</StyledLink>
+                        </MenuItem>
+                        <MenuItem key="rent">
+                            <StyledLink to="/rent">Rent</StyledLink>
+                        </MenuItem>
+                        <MenuItem key="explore">
+                            <StyledLink to="/explore">Explore</StyledLink>
+                        </MenuItem>
+                        <MenuItem key="contact">
+                            <StyledLink to="/contact">Contact Us</StyledLink>
+                        </MenuItem>
+                        <MenuItem key="about">
+                            <StyledLink to="/about">About Us</StyledLink>
+                        </MenuItem>
+                    </Menu>
+                    <UserSection>
+                        <AuthList>
+                            <StyledLink to="/auth" style={{ textDecoration: 'none' }}><Button shape="round" size="large" >Login</Button></StyledLink>
+                            <span className='mx-2'></span>
+                            <StyledLink to="/auth" style={{ textDecoration: 'none', color: '#fff' }}><Button shape="round" size="large" type="primary">Register</Button></StyledLink>
+                        </AuthList>
+                    </UserSection>
+                </Nav>
+            </StyledHeader>
         );
     }
 }
