@@ -34,6 +34,10 @@ const FooterRow = styled(Row)`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
 `;
 
 const FooterMenu = styled(Menu)`
@@ -41,21 +45,14 @@ const FooterMenu = styled(Menu)`
   border: none;
 `;
 
-const SocialIcons = () => {
-    return (
-        <div>
-            <FooterIcon>
-                <FacebookOutlined />
-            </FooterIcon>
-            <FooterIcon>
-                <TwitterOutlined />
-            </FooterIcon>
-            <FooterIcon>
-                <InstagramOutlined />
-            </FooterIcon>
-        </div>
-    );
-};
+const SocialIcons = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const StyledDivider = styled(Divider)`
+  background-color: #fff;
+`;
 
 class CustomFooter extends Component {
     render() {
@@ -91,13 +88,23 @@ class CustomFooter extends Component {
                         </FooterMenu>
                     </FooterColumn>
                 </FooterRow>
-                <Divider />
+                <StyledDivider />
                 <FooterRow>
                     <FooterColumn lg={{ span: 12 }} md={{ span: 24 }}>
                         <FooterText>© 2024 Your Company. All Rights Reserved.</FooterText>
                     </FooterColumn>
                     <FooterColumn lg={{ span: 12 }} md={{ span: 24 }} style={{ textAlign: 'right' }}>
-                        <SocialIcons />
+                        <SocialIcons>
+                            <FooterIcon>
+                                <FacebookOutlined />
+                            </FooterIcon>
+                            <FooterIcon>
+                                <TwitterOutlined />
+                            </FooterIcon>
+                            <FooterIcon>
+                                <InstagramOutlined />
+                            </FooterIcon>
+                        </SocialIcons>
                     </FooterColumn>
                 </FooterRow>
             </FooterContainer>

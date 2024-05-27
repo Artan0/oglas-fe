@@ -4,12 +4,17 @@ import './index.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import GlobalStyles from './assets/fonts/GlobalFontStyle';
+import GoogleFonts from './assets/fonts/GoogleFonts';
+
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
+    <GoogleFonts />
+    <GlobalStyles />
     <App />
   </React.StrictMode>
 );
