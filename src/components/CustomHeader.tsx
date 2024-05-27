@@ -89,13 +89,13 @@ class CustomHeader extends Component<{}, CustomHeaderState> {
                             <StyledLink to="/rent">Rent</StyledLink>
                         </MenuItem>
                         <MenuItem key="explore">
-                            <StyledLink to="/explore">Explore</StyledLink>
-                        </MenuItem>
-                        <MenuItem key="contact">
-                            <StyledLink to="/contact">Contact Us</StyledLink>
+                            <StyledLink to="/ads">Explore</StyledLink>
                         </MenuItem>
                         <MenuItem key="about">
                             <StyledLink to="/about">About Us</StyledLink>
+                        </MenuItem>
+                        <MenuItem key="auction">
+                            <StyledLink to="/auction">Auction</StyledLink>
                         </MenuItem>
                     </Menu>
                     <UserSection>

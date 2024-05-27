@@ -7,7 +7,7 @@ const { Footer } = Layout;
 const { Text } = Typography;
 
 const FooterContainer = styled(Footer)`
-  background-color: #001529;
+  background-color: #1c86cf;
   color: #fff;
 `;
 
@@ -26,7 +26,7 @@ const FooterText = styled(Text)`
 const FooterRow = styled(Row)`
   display: flex;
   justify-content: space-between;
-  flex-wrap: wrap; /* Allows items to wrap to the next line on smaller screens */
+  flex-wrap: wrap; 
 `;
 
 const FooterMenu = styled(Menu)`
