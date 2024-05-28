@@ -6,6 +6,7 @@ import Authentication from './pages/Authentication';
 import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
 import Ads from './pages/Ads';
+import Ad from './pages/Ad';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path='/about' element={<AboutUs />} />
         <Route path='/contact' element={<ContactUs />} />
         <Route path='/ads' element={<Ads />} />
+        <Route path="/ad/:id" element={<Ad />} />
         {/*routes here*/}
       </Routes>
     </Router>
