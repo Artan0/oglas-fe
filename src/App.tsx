@@ -7,6 +7,7 @@ import ContactUs from './pages/ContactUs';
 import AboutUs from './pages/AboutUs';
 import Ads from './pages/Ads';
 import Ad from './pages/Ad';
+import Rent from './pages/Rent';
 
 function App() {
   return (
@@ -18,6 +19,8 @@ function App() {
         <Route path='/contact' element={<ContactUs />} />
         <Route path='/ads' element={<Ads />} />
         <Route path="/ad/:id" element={<Ad />} />
+        <Route path="/rent" element={<Rent />} />
+
         {/*routes here*/}
       </Routes>
     </Router>
