@@ -1,16 +1,23 @@
-import React, { Component } from 'react';
+import React, { Component, ContextType } from 'react';
 import styled from 'styled-components';
-import { Layout, Input, Button, Form, message, Tabs, Col, Checkbox, DatePicker, Select } from 'antd';
+import { Layout, Input, Button, Form, message, Tabs, Col, DatePicker, Select } from 'antd';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import CustomLayout from '../layouts/layout';
-import axios from 'axios';
-import loginImage from '../assets/images/sign-up.png'
-
+import axiosInstance from '../api';
+import loginImage from '../assets/images/sign-up.png';
+import { User } from '../types/user';
+import { UserContext, UserContextProps } from '../context/User-context';
 const { Content } = Layout;
 const { TabPane } = Tabs;
 const { Option } = Select;
 
-export interface AuthState {
+interface AuthProps {
+    navigate: NavigateFunction;
+}
+
+interface AuthState {
     componentToShow: "login" | "register";
+    user: User | null;
 }
 
 const StyledContent = styled(Content)`
@@ -34,7 +41,7 @@ const StyledTabs = styled(Tabs)`
     padding: 10px;
 
     .ant-tabs-nav-wrap {
-        display:flex;
+        display: flex;
         justify-content: center;
     }
 `;
@@ -49,10 +56,11 @@ const prefixSelector = (
 
 const StyledDiv = styled.div`
     display: flex;
-    justify-content:center;
+    justify-content: center;
     align-items: center;
-    padding:15px
-`
+    padding: 15px;
+`;
+
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -68,44 +76,39 @@ const formItemLayout = {
     },
 };
 
-class Authentication extends Component<{}, AuthState> {
-    constructor(props: any) {
-        super(props);
-        this.state = {
-            componentToShow: "login"
-        };
-    }
+class Authentication extends Component<AuthProps, AuthState> {
 
-    login = () => {
-        this.setState({ componentToShow: "login" });
-    };
+    static contextType = UserContext;
+    context!: ContextType<typeof UserContext>;
 
-    register = () => {
-        this.setState({ componentToShow: "register" });
-    };
+    handleLogin = async (values: any) => {
+        try {
+            const response = await axiosInstance.post('/auth/login/', values);
+            const token = response.data.key;
+            localStorage.setItem('authToken', token);
+            message.success('Login successful!');
 
-    onFinishLogin = (values: any) => {
-        axios.post('http://localhost:8081/login', values)
-            .then((response: any) => {
-                console.log('Login successful:', response.data);
-                message.success('Login successful');
-            })
-            .catch((error: any) => {
-                console.error('Login failed:', error);
-                message.error('Login failed. Please check your credentials.');
+            const userInfoResponse = await axiosInstance.get('/user-info/', {
+                headers: {
+                    'Authorization': `Token ${token}`
+                }
             });
-    };
 
-    onFinishRegister = (values: any) => {
-        axios.post('http://localhost:8081/register', values)
-            .then((response: any) => {
-                console.log('Registration successful:', response.data);
-                message.success('Registration successful');
-            })
-            .catch((error: any) => {
-                console.error('Registration failed:', error);
-                message.error('Registration failed. Please check your input.');
-            });
+            const { setUser } = this.context as UserContextProps;
+            setUser(userInfoResponse.data);
+
+            this.props.navigate('/');
+        } catch (error) {
+            message.error('Login failed. Please check your credentials.');
+        }
+    };
+    handleRegister = async (values: any) => {
+        try {
+            await axiosInstance.post('/auth/registration/custom/', values);
+            message.success('Registration successful! Please check your email to confirm your account.');
+        } catch (error) {
+            message.error('Registration failed. Please check your inputs.');
+        }
     };
 
     render() {
@@ -120,7 +123,7 @@ class Authentication extends Component<{}, AuthState> {
                                         {...formItemLayout}
                                         name="loginForm"
                                         initialValues={{ remember: true }}
-                                        onFinish={this.onFinishLogin}
+                                        onFinish={this.handleLogin}
                                     >
                                         <Form.Item
                                             label="Email"
@@ -150,11 +153,11 @@ class Authentication extends Component<{}, AuthState> {
                                         name="registerForm"
                                         {...formItemLayout}
                                         initialValues={{ remember: true }}
-                                        onFinish={this.onFinishRegister}
+                                        onFinish={this.handleRegister}
                                     >
                                         <Form.Item
                                             label="First Name"
-                                            name="firstName"
+                                            name="first_name"
                                             rules={[{ required: true, message: 'Please input your first name!' }]}
                                         >
                                             <Input />
@@ -162,8 +165,15 @@ class Authentication extends Component<{}, AuthState> {
 
                                         <Form.Item
                                             label="Last Name"
-                                            name="lastName"
+                                            name="last_name"
                                             rules={[{ required: true, message: 'Please input your last name!' }]}
+                                        >
+                                            <Input />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Username"
+                                            name="username"
+                                            rules={[{ required: true, message: 'Please input your username!' }]}
                                         >
                                             <Input />
                                         </Form.Item>
@@ -175,30 +185,37 @@ class Authentication extends Component<{}, AuthState> {
                                         >
                                             <Input />
                                         </Form.Item>
+
                                         <Form.Item
                                             label="Password"
-                                            name="password"
+                                            name="password1"
                                             rules={[{ required: true, message: 'Please input your password!' }]}
                                         >
                                             <Input.Password />
                                         </Form.Item>
                                         <Form.Item
-                                            name="phoneNumber"
+                                            label="Confirm Password"
+                                            name="password2"
+                                            rules={[{ required: true, message: 'Please confirm your password!' }]}
+                                        >
+                                            <Input.Password />
+                                        </Form.Item>
+
+                                        <Form.Item
+                                            name="phone_number"
                                             label="Phone Number"
+                                            rules={[{ required: true, message: 'Please input your phone number!' }]}
                                         >
                                             <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
                                         </Form.Item>
 
-                                        <Form.Item label="Employed" name="isEmployed" valuePropName="checked" style={{ textAlign: 'left' }}>
-                                            <Checkbox>Checkbox</Checkbox>
-                                        </Form.Item>
-
-                                        <Form.Item label="Date Of Birth" name="dateOfBirth" style={{ textAlign: 'left' }}>
+                                        <Form.Item
+                                            label="Date Of Birth"
+                                            name="date_of_birth"
+                                            style={{ textAlign: 'left' }}
+                                        >
                                             <DatePicker />
                                         </Form.Item>
-
-
-
 
                                         <Form.Item>
                                             <Button type="primary" htmlType="submit">
@@ -221,4 +238,11 @@ class Authentication extends Component<{}, AuthState> {
     }
 }
 
-export default Authentication;
+function withRouter(Component: React.ComponentType<AuthProps>) {
+    return function WrappedComponent(props: any) {
+        const navigate = useNavigate();
+        return <Component {...props} navigate={navigate} />;
+    };
+}
+
+export default withRouter(Authentication);

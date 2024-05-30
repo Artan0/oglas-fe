@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { Layout, Menu, Button } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
-
+import { useUser } from "../context/User-context";
 const { Header } = Layout;
 
 const StyledHeader = styled(Header) <{ isFixed: boolean }>`
@@ -43,72 +43,80 @@ const AuthList = styled.div`
 
 const StyledLink = styled(Link)`
     text-decoration: none;
-`
+`;
 
 const MenuItem = styled(Menu.Item)`
     font-size: 18px;
 `;
 
-interface CustomHeaderState {
-    isFixed: boolean;
+interface CustomHeaderProps {
 }
 
-class CustomHeader extends Component<{}, CustomHeaderState> {
-    constructor(props: {}) {
-        super(props);
-        this.state = {
-            isFixed: false,
+const CustomHeader: React.FC<CustomHeaderProps> = () => {
+    const { user, setUser } = useUser();
+    const [isFixed, setIsFixed] = useState(false);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const isScrolled = window.scrollY > 100;
+            setIsFixed(isScrolled);
         };
-    }
 
-    componentDidMount() {
-        window.addEventListener('scroll', this.handleScroll);
-        this.handleScroll();
-    }
+        window.addEventListener('scroll', handleScroll);
 
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.handleScroll);
-    }
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
+    }, []);
 
-    handleScroll = () => {
-        const isScrolled = window.scrollY > 100;
-        this.setState({ isFixed: isScrolled });
+    const handleLogout = () => {
+        if (setUser) {
+            setUser(null);
+        }
+        localStorage.removeItem('authToken');
+        navigate("/authentication")
     };
 
-    render() {
-        return (
-            <StyledHeader isFixed={this.state.isFixed}>
-                <Nav>
-                    {/* <Logo src="/logo.png" alt="Logo" /> */}
-                    <h1 className="text-black">Oglas</h1>
-                    <Menu className="d-flex justify-content-center" theme="light" mode="horizontal" style={{ minWidth: 0, flex: "auto" }}>
-                        <MenuItem key="home">
-                            <StyledLink to="/">Home</StyledLink>
-                        </MenuItem>
-                        <MenuItem key="rent">
-                            <StyledLink to="/rent">Rent</StyledLink>
-                        </MenuItem>
-                        <MenuItem key="explore">
-                            <StyledLink to="/ads">Explore</StyledLink>
-                        </MenuItem>
-                        <MenuItem key="about">
-                            <StyledLink to="/about">About Us</StyledLink>
-                        </MenuItem>
-                        <MenuItem key="auction">
-                            <StyledLink to="/auction">Auction</StyledLink>
-                        </MenuItem>
-                    </Menu>
-                    <UserSection>
+    return (
+        <StyledHeader isFixed={isFixed}>
+            <Nav>
+                {/* <Logo src="/logo.png" alt="Logo" /> */}
+                <h1 className="text-black">Oglas</h1>
+                <Menu className="d-flex justify-content-center" theme="light" mode="horizontal" style={{ minWidth: 0, flex: "auto" }}>
+                    <MenuItem key="home">
+                        <StyledLink to="/">Home </StyledLink>
+                    </MenuItem>
+                    <MenuItem key="rent">
+                        <StyledLink to="/rent">Rent</StyledLink>
+                    </MenuItem>
+                    <MenuItem key="explore">
+                        <StyledLink to="/ads">Explore</StyledLink>
+                    </MenuItem>
+                    <MenuItem key="about">
+                        <StyledLink to="/about">About Us</StyledLink>
+                    </MenuItem>
+                    <MenuItem key="auction">
+                        <StyledLink to="/auction">Auction</StyledLink>
+                    </MenuItem>
+                </Menu>
+                <UserSection>
+                    {user ? (
+                        <>
+                            <span className="text-dark px-2"> {user.username}!</span>
+                            <Button onClick={handleLogout} shape="round" size="large" >Logout</Button>
+                        </>
+                    ) : (
                         <AuthList>
                             <StyledLink to="/authentication" style={{ textDecoration: 'none' }}><Button shape="round" size="large" >Login</Button></StyledLink>
                             <span className='mx-2'></span>
                             <StyledLink to="/authentication" style={{ textDecoration: 'none', color: '#fff' }}><Button shape="round" size="large" type="primary">Register</Button></StyledLink>
                         </AuthList>
-                    </UserSection>
-                </Nav>
-            </StyledHeader>
-        );
-    }
-}
+                    )}
+                </UserSection>
+            </Nav>
+        </StyledHeader>
+    );
+};
 
 export default CustomHeader;
