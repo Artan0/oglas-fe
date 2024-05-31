@@ -110,30 +110,30 @@ const Slogan = styled.h1`
 const dummyAds = [
     {
         title: "Ad 1",
-        image: "https://thumbor.forbes.com/thumbor/fit-in/x/https://www.forbes.com/advisor/wp-content/uploads/2021/08/download-7.jpg",
+        imageUrl: "https://thumbor.forbes.com/thumbor/fit-in/x/https://www.forbes.com/advisor/wp-content/uploads/2021/08/download-7.jpg",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        price: "$100",
+        price: 100,
         rating: 4.5
     },
     {
         title: "Ad 2",
-        image: "https://thumbor.forbes.com/thumbor/fit-in/x/https://www.forbes.com/advisor/wp-content/uploads/2021/08/download-7.jpg",
+        imageUrl: "https://thumbor.forbes.com/thumbor/fit-in/x/https://www.forbes.com/advisor/wp-content/uploads/2021/08/download-7.jpg",
         description: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-        price: "$150",
+        price: 150,
         rating: 3.5
     },
     {
         title: "Ad 3",
-        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6tcD5h90YTk2sVcruvpVJ49YsR5H8o-Bl74I6VdrjIg&s",
+        imageUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6tcD5h90YTk2sVcruvpVJ49YsR5H8o-Bl74I6VdrjIg&s",
         description: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-        price: "$200",
+        price: 200,
         rating: 2.5
     },
     {
         title: "Ad 4",
-        image: "https://thumbor.forbes.com/thumbor/fit-in/x/https://www.forbes.com/advisor/wp-content/uploads/2021/08/download-7.jpg",
+        imageUrl: "https://thumbor.forbes.com/thumbor/fit-in/x/https://www.forbes.com/advisor/wp-content/uploads/2021/08/download-7.jpg",
         description: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-        price: "$120",
+        price: 120,
         rating: 1.5
     }
 ];

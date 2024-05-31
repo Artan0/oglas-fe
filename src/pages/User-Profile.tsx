@@ -6,6 +6,7 @@ import styled from "styled-components";
 import AdCard from "../components/AdCard";
 import { useUser } from "../context/User-context";
 import axiosInstance from "../api";
+import { useNavigate } from "react-router-dom";
 
 const { Title, Paragraph } = Typography;
 
@@ -21,12 +22,13 @@ const UserProfile: React.FC = () => {
     const { user, setUser } = useUser();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
+    const navigate = useNavigate();
 
     const ads = [...Array(4)].map((_, index) => ({
         title: `Ad Title ${index + 1}`,
         image: "https://via.placeholder.com/150",
         description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        price: `$${(Math.random() * 10000).toFixed(2)}`,
+        price: Math.floor(Math.random() * 5) + 1,
         rating: Math.floor(Math.random() * 5) + 1,
     }));
 
@@ -90,13 +92,15 @@ const UserProfile: React.FC = () => {
                     </Col>
                     <Col xs={24} sm={24} md={16} lg={16} xl={16}>
                         <MyAdsSection>
-                            <Title level={3}>My Ads</Title>
-                            <Row gutter={[16, 16]}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Title level={3}>My Ads</Title>
+                                <Button size="large" type="primary" onClick={() => navigate('/add-ad')}>Add Ad</Button>
+                            </div>                            <Row gutter={[16, 16]}>
                                 {ads.map((ad, index) => (
                                     <Col key={index} xs={24} sm={12} md={12} lg={8} xl={8}>
                                         <AdCard
                                             title={ad.title}
-                                            image={ad.image}
+                                            imageUrl={ad.image}
                                             description={ad.description}
                                             price={ad.price}
                                             rating={ad.rating}

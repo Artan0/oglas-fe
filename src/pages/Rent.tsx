@@ -106,9 +106,9 @@ class Rent extends Component {
                                     <Col key={index} xs={24} sm={12} md={12} lg={8} xl={8}>
                                         <AdCard
                                             title={`Ad Title ${index + 1}`}
-                                            image={`https://via.placeholder.com/150`}
+                                            imageUrl={`https://via.placeholder.com/150`}
                                             description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                                            price={`$${(Math.random() * 10000).toFixed(2)}`}
+                                            price={Math.floor(Math.random() * 5) + 1}
                                             rating={Math.floor(Math.random() * 5) + 1}
                                         />
                                     </Col>

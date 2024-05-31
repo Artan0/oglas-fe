@@ -6,10 +6,10 @@ const { Meta } = Card;
 
 interface AdCardProps {
   title: string;
-  image: string;
+  imageUrl: string;
   description: string;
-  price: string;
-  rating: number;
+  price: number;
+  rating?: number;
 }
 
 const StyledCard = styled(Card)`
@@ -21,13 +21,13 @@ const StyledCard = styled(Card)`
 `;
 const Price = styled.div`
   position: absolute;
-  bottom: 10px;
+  bottom: 7px;
   left: 27px;
 `;
 
 const Rating = styled.div`
   position: absolute;
-  bottom: 10px;
+  bottom: 7px;
   right: 15px;
   .ant-rate-star.ant-rate-star-full {
     margin-inline-end: 0; 
@@ -37,15 +37,15 @@ const Rating = styled.div`
   }
 `;
 
-const AdCard: React.FC<AdCardProps> = ({ title, image, description, price, rating }) => {
+const AdCard: React.FC<AdCardProps> = ({ title, imageUrl, description, price, rating }) => {
   return (
     <StyledCard
       hoverable
-      cover={<img style={{ borderRadius: 2 }} alt="ad" src={image} />}
+      cover={<img style={{ borderRadius: 2 }} alt="ad" src={imageUrl} />}
     >
       <Meta title={title} description={description} />
 
-      <Price>{price}</Price>
+      <Price>${price}</Price>
       <Rating>
         <Rate disabled defaultValue={rating} />
       </Rating>
