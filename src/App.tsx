@@ -9,6 +9,7 @@ import Ads from './pages/Ads';
 import Ad from './pages/Ad';
 import Rent from './pages/Rent';
 import { UserProvider } from './context/User-context';
+import UserProfile from './pages/User-Profile';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path='/ads' element={<Ads />} />
           <Route path="/ad/:id" element={<Ad />} />
           <Route path="/rent" element={<Rent />} />
+          <Route path="/profile" element={<UserProfile />} />
 
           {/*routes here*/}
         </Routes>

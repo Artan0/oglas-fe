@@ -103,7 +103,7 @@ const CustomHeader: React.FC<CustomHeaderProps> = () => {
                 <UserSection>
                     {user ? (
                         <>
-                            <span className="text-dark px-2"> {user.username}!</span>
+                            <StyledLink to="/profile"> <span className="text-dark px-2"> {user.username}!</span></StyledLink>
                             <Button onClick={handleLogout} shape="round" size="large" >Logout</Button>
                         </>
                     ) : (
