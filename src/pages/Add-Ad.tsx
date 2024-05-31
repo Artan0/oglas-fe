@@ -21,6 +21,9 @@ const AddAd: React.FC = () => {
     const [adTypes, setAdTypes] = useState<string[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
     const [manufacturers, setManufacturers] = useState<string[]>([]);
+    const [colors, setColors] = useState<string[]>([]);
+    const [car_types, setCarTypes] = useState<string[]>([]);
+    const [fuels, setFuel] = useState<string[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>();
     const [formData, setFormData] = useState<Ad>({
         title: "",
@@ -31,26 +34,35 @@ const AddAd: React.FC = () => {
         address: "",
         category: "",
         manufacturer: "",
-        imageUrl: ""
+        imageUrl: "",
+        color: "",
+        car_type: "",
+        fuel_type: "",
     });
 
     useEffect(() => {
         const fetchChoices = async () => {
             try {
                 const response = await axiosInstance.get("/api/choices/");
-                const { cities, ad_types, categories, manufacturers } = response.data;
+                const { cities, ad_types, categories, manufacturers, car_types, colors, fuels } = response.data;
                 console.log("Received Data:", response.data);
 
                 setCities(cities.map((city: any[]) => city[0]));
                 setAdTypes(ad_types.map((type: any[]) => type[0]));
                 setCategories(categories.map((category: any[]) => category[0]));
                 setManufacturers(manufacturers.map((manufacturer: any[]) => manufacturer[0]));
+                setCarTypes(car_types.map((car_type: any[]) => car_type[0]));
+                setColors(colors.map((color: any[]) => color[0]));
+                setFuel(fuels.map((fuel: any[]) => fuel[0]));
 
                 form.setFieldsValue({
                     location: cities[0][0],
                     ad_type: ad_types[0][0],
                     category: categories[0][0],
                     manufacturer: manufacturers[0][0],
+                    fuel_type: fuels[0][0],
+                    car_type: car_types[0][0],
+                    color: colors[0][0],
                 });
             } catch (error) {
                 console.error("Error fetching choices:", error);
@@ -67,17 +79,32 @@ const AddAd: React.FC = () => {
 
     const handleAdTypeChange = (value: string) => {
         form.setFieldsValue({ ad_type: value });
-        setFormData({ ...formData, ad_type: value });
+        setFormData(prevFormData => ({ ...prevFormData, ad_type: value }));
     };
 
     const handleLocationChange = (value: string) => {
         form.setFieldsValue({ location: value });
-        setFormData({ ...formData, location: value });
+        setFormData(prevFormData => ({ ...prevFormData, location: value }));
     };
 
     const handleManufacturerChange = (value: string) => {
         form.setFieldsValue({ manufacturer: value });
-        setFormData({ ...formData, manufacturer: value });
+        setFormData(prevFormData => ({ ...prevFormData, manufacturer: value }));
+    };
+
+    const handleColorChange = (value: string) => {
+        form.setFieldsValue({ color: value });
+        setFormData(prevFormData => ({ ...prevFormData, color: value }));
+    };
+
+    const handleFuelTypeChange = (value: string) => {
+        form.setFieldsValue({ fuel: value });
+        setFormData(prevFormData => ({ ...prevFormData, fuel_type: value }));
+    };
+
+    const handleCarTypeChange = (value: string) => {
+        form.setFieldsValue({ car_type: value });
+        setFormData(prevFormData => ({ ...prevFormData, car_type: value }));
     };
 
     const handleFormSubmit = async () => {
@@ -117,7 +144,7 @@ const AddAd: React.FC = () => {
     return (
         <CustomLayout>
             <Container className="p-5">
-                <Row className="mt-5" gutter={[16, 16]} justify="center">
+                <Row className="mt-5" justify="center">
                     <Col xs={24} sm={24} md={16} lg={14} xl={14}>
                         <Card className="w-75">
                             <Form style={{ maxWidth: '600px' }}
@@ -174,7 +201,7 @@ const AddAd: React.FC = () => {
                                 <Form.Item
                                     label="Address"
                                     name="address"
-                                    rules={[{ required: true, message: 'Please input the address!' }]}
+                                    rules={[{ required: false }]}
                                 >
                                     <Input size="large" />
                                 </Form.Item>
@@ -190,17 +217,58 @@ const AddAd: React.FC = () => {
                                     </Select>
                                 </Form.Item>
                                 {selectedCategory === "car" && (
-                                    <Form.Item
-                                        label="Manufacturer"
-                                        name="manufacturer"
-                                        rules={[{ required: true, message: 'Please select the manufacturer!' }]}
-                                    >
-                                        <Select size="large" onSelect={handleManufacturerChange}>
-                                            {manufacturers.map((manufacturer, index) => (
-                                                <Option key={index} value={manufacturer}>{manufacturer}</Option>
-                                            ))}
-                                        </Select>
-                                    </Form.Item>
+                                    <>
+                                        <Form.Item
+                                            label="Manufacturer"
+                                            name="manufacturer"
+                                            rules={[{ required: true, message: 'Please select the manufacturer!' }]}
+                                        >
+                                            <Select size="large" onSelect={handleManufacturerChange}>
+                                                {manufacturers.map((manufacturer, index) => (
+                                                    <Option key={index} value={manufacturer}>{manufacturer}</Option>
+                                                ))}
+                                            </Select>
+                                        </Form.Item>
+                                        <Form.Item label="Year" name="year" rules={[{ required: false }]}>
+                                            <Input size="large" />
+                                        </Form.Item>
+                                        <Form.Item label="Mileage" name="mileage" rules={[{ required: false }]}>
+                                            <Input size="large" />
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Color"
+                                            name="color"
+                                            rules={[{ required: true, message: 'Please enter a color!' }]}
+                                        >
+                                            <Select size="large" onSelect={handleColorChange}>
+                                                {colors.map((color, index) => (
+                                                    <Option key={index} value={color}>{color}</Option>
+                                                ))}
+                                            </Select>
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Car Type"
+                                            name="car_type"
+                                            rules={[{ required: true, message: 'Please select the car type!' }]}
+                                        >
+                                            <Select size="large" onSelect={handleCarTypeChange}>
+                                                {car_types.map((car_type, index) => (
+                                                    <Option key={index} value={car_type}>{car_type}</Option>
+                                                ))}
+                                            </Select>
+                                        </Form.Item>
+                                        <Form.Item
+                                            label="Fuel Type"
+                                            name="fuel_type"
+                                            rules={[{ required: true, message: 'Please select the fuel type!' }]}
+                                        >
+                                            <Select size="large" onSelect={handleFuelTypeChange}>
+                                                {fuels.map((fuel, index) => (
+                                                    <Option key={index} value={fuel}>{fuel}</Option>
+                                                ))}
+                                            </Select>
+                                        </Form.Item>
+                                    </>
                                 )}
                                 <Form.Item
                                     label="Images"
@@ -222,9 +290,9 @@ const AddAd: React.FC = () => {
                             </Form>
                         </Card>
                     </Col>
-                    <Col xs={24} sm={24} md={8} lg={10} xl={10}>
+                    <Col xs={24} sm={24} md={8} lg={7} xl={7}>
                         <div>
-                            <AdCard {...formData} imageUrl={fileList.length > 0 && fileList[0].url ? fileList[0].url : ""} />
+                            <AdCard {...formData} imageUrl={fileList.length > 0 ? fileList[0].url || "" : ""} />
                         </div>
                     </Col>
                 </Row>

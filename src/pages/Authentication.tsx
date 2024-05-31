@@ -46,13 +46,13 @@ const StyledTabs = styled(Tabs)`
     }
 `;
 
-const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
-        <Select style={{ width: 70 }}>
-            <Option value="389">+389</Option>
-        </Select>
-    </Form.Item>
-);
+// const prefixSelector = (
+//     <Form.Item name="prefix" noStyle>
+//         <Select style={{ width: 70 }}>
+//             <Option value="389">+389</Option>
+//         </Select>
+//     </Form.Item>
+// );
 
 const StyledDiv = styled.div`
     display: flex;
@@ -201,21 +201,15 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             <Input.Password />
                                         </Form.Item>
 
-                                        <Form.Item
+                                        {/* <Form.Item
                                             name="phone_number"
                                             label="Phone Number"
                                             rules={[{ required: true, message: 'Please input your phone number!' }]}
                                         >
                                             <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
-                                        </Form.Item>
+                                        </Form.Item> */}
 
-                                        <Form.Item
-                                            label="Date Of Birth"
-                                            name="date_of_birth"
-                                            style={{ textAlign: 'left' }}
-                                        >
-                                            <DatePicker />
-                                        </Form.Item>
+
 
                                         <Form.Item>
                                             <Button type="primary" htmlType="submit">
