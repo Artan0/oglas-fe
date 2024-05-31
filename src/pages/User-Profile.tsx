@@ -1,12 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import CustomLayout from "../layouts/layout";
-import { Row, Col, Card, Avatar, Button, Typography, Modal, Form, Input } from "antd";
+import { Row, Col, Card, Avatar, Button, Typography, Modal, Form, Input } from "antd"; // Import Pagination
 import { Container } from "react-bootstrap";
 import styled from "styled-components";
 import AdCard from "../components/AdCard";
 import { useUser } from "../context/User-context";
 import axiosInstance from "../api";
 import { useNavigate } from "react-router-dom";
+import { Ad } from "../types/Ad";
+import Pagination from "@mui/material/Pagination";
+
 
 const { Title, Paragraph } = Typography;
 
@@ -22,15 +25,30 @@ const UserProfile: React.FC = () => {
     const { user, setUser } = useUser();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
+    const [userAds, setUserAds] = useState<Ad[]>([]);
+    const [currentPage, setCurrentPage] = useState<number>(1); // Track current page
+    const [totalPages, setTotalPages] = useState<number>(1); // Track total pages
     const navigate = useNavigate();
 
-    const ads = [...Array(4)].map((_, index) => ({
-        title: `Ad Title ${index + 1}`,
-        image: "https://via.placeholder.com/150",
-        description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-        price: Math.floor(Math.random() * 5) + 1,
-        rating: Math.floor(Math.random() * 5) + 1,
-    }));
+    useEffect(() => {
+        const fetchUserAds = async () => {
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await axiosInstance.get(`/user-ads/?page=${currentPage}`, {
+                    headers: {
+                        'Authorization': `Token ${token}`
+                    }
+                }); // Fetch ads for current page
+                setUserAds(response.data.results); // Update ads
+                setTotalPages(response.data.total_pages); // Update total pages
+                console.log("Total Pages:", response.data.total_pages); // Log total pages
+            } catch (error) {
+                console.error('Error fetching user ads:', error);
+            }
+        };
+
+        fetchUserAds();
+    }, [currentPage]); // Fetch ads when currentPage changes
 
     const showModal = () => {
         if (user) {
@@ -65,9 +83,12 @@ const UserProfile: React.FC = () => {
             });
     };
 
-
     const handleCancel = () => {
         setIsModalVisible(false);
+    };
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+        setCurrentPage(page); // Update current page
     };
 
     return (
@@ -95,12 +116,13 @@ const UserProfile: React.FC = () => {
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Title level={3}>My Ads</Title>
                                 <Button size="large" type="primary" onClick={() => navigate('/add-ad')}>Add Ad</Button>
-                            </div>                            <Row gutter={[16, 16]}>
-                                {ads.map((ad, index) => (
+                            </div>
+                            <Row gutter={[16, 16]}>
+                                {userAds.map((ad, index) => (
                                     <Col key={index} xs={24} sm={12} md={12} lg={8} xl={8}>
                                         <AdCard
                                             title={ad.title}
-                                            imageUrl={ad.image}
+                                            imageUrl={ad.imageUrl}
                                             description={ad.description}
                                             price={ad.price}
                                             rating={ad.rating}
@@ -108,6 +130,17 @@ const UserProfile: React.FC = () => {
                                     </Col>
                                 ))}
                             </Row>
+                            <div className="d-flex justify-content-center mt-5" >
+                                <Pagination
+                                    count={totalPages}
+                                    page={currentPage}
+                                    onChange={handlePageChange}
+                                    variant="outlined"
+                                    shape="rounded"
+                                    color="primary"
+                                />
+
+                            </div>
                         </MyAdsSection>
                     </Col>
                 </Row>

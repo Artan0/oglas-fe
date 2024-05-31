@@ -38,6 +38,7 @@ const AddAd: React.FC = () => {
         color: "",
         car_type: "",
         fuel_type: "",
+        rating: 0
     });
 
     useEffect(() => {

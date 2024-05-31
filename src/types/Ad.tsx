@@ -11,4 +11,5 @@ export interface Ad {
     color: string;
     car_type: string;
     fuel_type: string;
+    rating: number;
 }
