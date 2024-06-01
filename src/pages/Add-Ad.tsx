@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import CustomLayout from "../layouts/layout";
 import { Form, Input, Select, Button, InputNumber, Card, Col, Row, Upload, message, UploadFile } from "antd";
 import { Container } from "react-bootstrap";
-import styled from "styled-components";
-import AdCard from "../components/AdCard";
 import { UploadOutlined } from '@ant-design/icons';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { app, imgDB } from "../setup/firebase";
-import axios from "axios";
+import { imgDB } from "../setup/firebase";
 import axiosInstance from "../api";
+import AdCard from "../components/AdCard";
 import { Ad } from "../types/Ad";
 
 const { Option } = Select;
@@ -17,6 +15,7 @@ const { TextArea } = Input;
 const AddAd: React.FC = () => {
     const [form] = Form.useForm();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
+    const [previewImageUrl, setPreviewImageUrl] = useState<string>("");
     const [cities, setCities] = useState<string[]>([]);
     const [adTypes, setAdTypes] = useState<string[]>([]);
     const [categories, setCategories] = useState<string[]>([]);
@@ -76,6 +75,12 @@ const AddAd: React.FC = () => {
     const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
         const limitedFileList = fileList.slice(0, 5);
         setFileList(limitedFileList);
+
+        if (limitedFileList.length > 0) {
+            setPreviewImageUrl(limitedFileList[0].thumbUrl || URL.createObjectURL(limitedFileList[0].originFileObj as Blob));
+        } else {
+            setPreviewImageUrl("");
+        }
     };
 
     const handleAdTypeChange = (value: string) => {
@@ -293,7 +298,7 @@ const AddAd: React.FC = () => {
                     </Col>
                     <Col xs={24} sm={24} md={8} lg={7} xl={7}>
                         <div>
-                            <AdCard {...formData} imageUrl={fileList.length > 0 ? fileList[0].url || "" : ""} />
+                            <AdCard {...formData} imageUrl={previewImageUrl} />
                         </div>
                     </Col>
                 </Row>
@@ -303,4 +308,3 @@ const AddAd: React.FC = () => {
 };
 
 export default AddAd;
-
