@@ -72,6 +72,8 @@ const Ads: React.FC = () => {
     const [adTypes, setAdTypes] = useState<string[]>([]);
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [totalPages, setTotalPages] = useState<number>(1);
+    const [searchTitle, setSearchTitle] = useState<string>("");
+    const [sortOption, setSortOption] = useState<string>("newest");
     const dateFormat = 'YYYY-MM-DD';
 
     useEffect(() => {
@@ -107,6 +109,8 @@ const Ads: React.FC = () => {
             }
         });
         params.append('page', currentPage.toString());
+        params.append('search', searchTitle);
+        params.append('sort', sortOption);
 
         axiosInstance.get(`/ads?${params.toString()}`)
             .then(response => {
@@ -127,13 +131,14 @@ const Ads: React.FC = () => {
         fetchAds();
         console.log(dateFormat);
 
-    }, [filters, currentPage]);
+    }, [filters, currentPage, searchTitle, sortOption]);
+
 
 
     const handleFilterChange = (name: string, value: any) => {
         if (name === 'priceFrom' || name === 'priceTo' || name === 'mileageFrom' || name === 'mileageTo') {
             value = parseFloat(value);
-            if (isNaN(value)) value = 0;
+            if (isNaN(value)) value = undefined;
         }
 
         setFilters(prevFilters => ({
@@ -158,6 +163,13 @@ const Ads: React.FC = () => {
         }
     };
 
+    const handleSearch = (value: string) => {
+        setSearchTitle(value);
+    };
+
+    const handleSortChange = (value: string) => {
+        setSortOption(value);
+    };
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
         setCurrentPage(page);
@@ -172,8 +184,8 @@ const Ads: React.FC = () => {
                             <h3>Search by</h3>
                             <Input.Group compact>
                                 <div className="d-flex justify-content-between">
-                                    <StyledInput size="large" style={{ width: '45%' }} placeholder="Price From" value={filters.priceFrom} onChange={(e) => handleFilterChange('priceFrom', e.target.value)} />
-                                    <StyledInput size="large" style={{ width: '45%' }} placeholder="Price To" value={filters.priceTo} onChange={(e) => handleFilterChange('priceTo', e.target.value)} />
+                                    <StyledInput type="number" size="large" style={{ width: '45%' }} placeholder="Price From" value={filters.priceFrom} onChange={(e) => handleFilterChange('priceFrom', e.target.value)} />
+                                    <StyledInput type="number" size="large" style={{ width: '45%' }} placeholder="Price To" value={filters.priceTo} onChange={(e) => handleFilterChange('priceTo', e.target.value)} />
 
                                 </div>
                                 <Select className="mt-3 w-100" size="large" placeholder="Location" value={filters.location || undefined} onChange={(value) => handleFilterChange('location', value)}>
@@ -288,8 +300,8 @@ const Ads: React.FC = () => {
                     </Col>
                     <Col xs={24} sm={24} md={18} lg={18} xl={18}>
                         <div className="d-flex justify-content-between">
-                            <Input.Search size="large" className="w-50" placeholder="Search by title" />
-                            <Select size="large" defaultValue="newest">
+                            <Input.Search size="large" className="w-50" placeholder="Search by title" onSearch={handleSearch} />
+                            <Select size="large" value={sortOption} onChange={handleSortChange}>
                                 <Option value="newest">Newest</Option>
                                 <Option value="oldest">Oldest</Option>
                                 <Option value="priceLowToHigh">Price: Low to High</Option>
