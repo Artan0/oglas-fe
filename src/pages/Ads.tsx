@@ -56,7 +56,7 @@ const Ads: React.FC = () => {
         mileageTo: undefined,
         color: "",
         fuelType: "",
-        adType: "",
+        adType: "sale",
         car_type: "",
         fromDate: null,
         toDate: null,
@@ -118,7 +118,7 @@ const Ads: React.FC = () => {
                 setTotalPages(response.data.total_pages);
                 const queryString = params.toString();
                 const newUrl = `${window.location.pathname}?${queryString}`;
-                window.history.pushState(null, '', newUrl);
+                window.history.replaceState(null, '', newUrl);
             })
             .catch(error => {
                 console.error("There was an error fetching the ads!", error);
@@ -211,7 +211,7 @@ const Ads: React.FC = () => {
                                     ))}
                                 </Select>
 
-                                <Select
+                                {/* <Select
                                     size="large"
                                     value={filters.adType || undefined}
                                     onChange={(value) => { handleFilterChange('adType', value); }}
@@ -223,7 +223,7 @@ const Ads: React.FC = () => {
                                     {adTypes.map((type, index) => (
                                         <Option key={index} value={type}>{type}</Option>
                                     ))}
-                                </Select>
+                                </Select> */}
 
 
                                 {selectedCategory === "car" && (
