@@ -1,13 +1,15 @@
 import React, { Component } from "react";
-import { Form, Select, DatePicker, Input, Button, Row, Col } from "antd";
+import { Form, Select, Input, Button, Row, Col } from "antd";
 import styled from "styled-components";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import CustomLayout from "../layouts/layout";
 import AdCard from "../components/AdCard";
 import { Container } from "react-bootstrap";
-import rentCarImage from "../assets/images/rent_car.png"
+import axiosInstance from "../api";
+import rentCarImage from "../assets/images/rent_car.png";
 import coloredMapImage from "../assets/images/colored_map.jpg";
-import carImage from "../assets/images/car.jpg"
+import carImage from "../assets/images/car.jpg";
+import { NavigateFunction, useNavigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -34,8 +36,8 @@ const StatsRow = styled.div`
   background: url(${carImage}) no-repeat center center;
   background-size: cover;
   margin-top: 1rem;
-  margin-bottom:2rem;
-  height:11rem;
+  margin-bottom: 2rem;
+  height: 11rem;
 
   &::before {
     content: "";
@@ -54,6 +56,8 @@ const StatsRow = styled.div`
 const StatsColumn = styled.div`
   flex: 1;
   text-align: center;
+  color: #fff;
+  z-index: 2;
 `;
 
 const StatsDivider = styled.div`
@@ -72,7 +76,7 @@ const ImageContainer = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 35px;
-  margin-top:-45px;
+  margin-top: -45px;
 `;
 
 const SearchForm = styled(Form)`
@@ -104,7 +108,7 @@ const Slogan = styled.h1`
   font-size: 40px;
   color: #333;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
-  padding:5px;
+  padding: 5px;
 `;
 
 const dummyAds = [
@@ -138,37 +142,81 @@ const dummyAds = [
     }
 ];
 
-class LandingPage extends Component {
-    handleSearch = (values: any) => {
-        console.log('Search values:', values);
+interface HomeState {
+    navigate: NavigateFunction;
+}
+
+class LandingPage extends Component<HomeState> {
+    state = {
+        categories: [],
+        cities: [],
+        selectedCategory: "",
+        selectedLocation: "",
+        searchTitle: ""
     };
+
+    componentDidMount() {
+        this.fetchChoices();
+    }
+
+    fetchChoices = async () => {
+        try {
+            const response = await axiosInstance.get("/api/choices/");
+            const { cities, categories } = response.data;
+
+            this.setState({
+                cities: cities.map((city: any[]) => city[0]),
+                categories: categories.map((category: any[]) => category[0])
+            });
+        } catch (error) {
+            console.error("Error fetching choices:", error);
+        }
+    };
+
+
+    handleSearch = () => {
+        const { selectedCategory, selectedLocation, searchTitle } = this.state;
+        const queryParams = new URLSearchParams();
+
+        if (selectedCategory) queryParams.append("category", selectedCategory);
+        if (selectedLocation) queryParams.append("location", selectedLocation);
+        if (searchTitle) queryParams.append("search", searchTitle);
+
+        this.props.navigate(`/ads?${queryParams.toString()}`);
+    };
+
+
+
+    handleChange = (name: any, value: any) => {
+        this.setState({ [name]: value });
+    };
+
 
     render() {
         return (
             <CustomLayout>
-                <LandingPageContainer className="pt-3" >
+                <LandingPageContainer className="pt-3">
                     <ImageContainer className="mt-5">
                         <Slogan>Your Slogan Goes Here</Slogan>
                         <SearchForm className="mt-4" layout="inline" onFinish={this.handleSearch}>
                             <FormItem name="category">
-                                <Select size="large" placeholder="Select Category" style={{ width: 200 }}>
-                                    <Option value="category1">Category 1</Option>
-                                    <Option value="category2">Category 2</Option>
-                                    <Option value="category3">Category 3</Option>
+                                <Select size="large" placeholder="Select Category" style={{ width: 200 }} onChange={(value) => this.handleChange('selectedCategory', value)}>
+                                    <Option value="">All</Option>
+                                    {this.state.categories.map((category, index) => (
+                                        <Option key={index} value={category}>{category}</Option>
+                                    ))}
                                 </Select>
                             </FormItem>
                             <FormItem name="location">
-                                <Select size="large" placeholder="Select Location" style={{ width: 200 }}>
-                                    <Option value="location1">Location 1</Option>
-                                    <Option value="location2">Location 2</Option>
-                                    <Option value="location3">Location 3</Option>
+                                <Select size="large" placeholder="Select Location" style={{ width: 200 }} onChange={(value) => this.handleChange('selectedLocation', value)}>
+                                    <Option value="">All</Option>
+                                    {this.state.cities.map((city, index) => (
+                                        <Option key={index} value={city}>{city}</Option>
+                                    ))}
                                 </Select>
                             </FormItem>
-                            <FormItem name="date">
-                                <DatePicker size="large" style={{ width: 200 }} />
-                            </FormItem>
                             <FormItem name="text">
-                                <Input size="large" placeholder="Search..." style={{ width: 200 }} />
+                                <Input size="large" placeholder="Search..." style={{ width: 200 }} onChange={(e) => this.handleChange('searchTitle', e.target.value)} />
                             </FormItem>
                             <FormItem>
                                 <SearchButton size="large" type="primary" htmlType="submit">
@@ -187,7 +235,7 @@ class LandingPage extends Component {
                         ))}
                     </StyledRow>
                     <Row className="d-flex align-items-center my-5">
-                        <Col span={12}>
+                        <Col xs={12}>
                             <div className="w-75">
                                 <h1>Text Column Goes Here</h1>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
@@ -201,7 +249,7 @@ class LandingPage extends Component {
                                 </Button>
                             </div>
                         </Col>
-                        <Col span={12}>
+                        <Col xs={12}>
                             <div>
                                 <img style={{ width: '100%', height: 'auto' }} src={rentCarImage} alt="rentcar" />
                             </div>
@@ -209,29 +257,29 @@ class LandingPage extends Component {
                     </Row>
                 </Container>
                 <StatsRow>
-                    <StatsColumn style={{ zIndex: 2 }}>
-                        <h1 className="text-white">3+</h1>
-                        <h2 className="text-white">Years in business</h2>
+                    <StatsColumn>
+                        <h1>3+</h1>
+                        <h2>Years in business</h2>
                     </StatsColumn>
-                    <StatsDivider style={{ zIndex: 2 }} />
-                    <StatsColumn style={{ zIndex: 2 }}>
-                        <h1 className="text-white">3K+</h1>
-                        <h2 className="text-white">Ads shared</h2>
+                    <StatsDivider />
+                    <StatsColumn>
+                        <h1>3K+</h1>
+                        <h2>Ads shared</h2>
                     </StatsColumn>
-                    <StatsDivider style={{ zIndex: 2 }} />
-                    <StatsColumn style={{ zIndex: 2 }}>
-                        <h1 className="text-white">20K+</h1>
-                        <h2 className="text-white">Users</h2>
+                    <StatsDivider />
+                    <StatsColumn>
+                        <h1>20K+</h1>
+                        <h2>Users</h2>
                     </StatsColumn>
                 </StatsRow>
                 <Container>
                     <Row className="d-flex align-items-center my-5">
-                        <Col span={12}>
+                        <Col xs={12}>
                             <div>
                                 <img style={{ width: '100%', height: 'auto' }} src={rentCarImage} alt="rentcar" />
                             </div>
                         </Col>
-                        <Col span={12}>
+                        <Col xs={12}>
                             <div className="w-75">
                                 <h1>Text Column Goes Here</h1>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
@@ -252,4 +300,11 @@ class LandingPage extends Component {
     }
 }
 
-export default LandingPage;
+function withRouter(Component: React.ComponentType<HomeState>) {
+    return function WrappedComponent(props: any) {
+        const navigate = useNavigate();
+        return <Component {...props} navigate={navigate} />;
+    };
+}
+
+export default withRouter(LandingPage);
