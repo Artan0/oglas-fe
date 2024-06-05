@@ -230,7 +230,7 @@ class LandingPage extends Component<HomeState> {
                     <StyledRow className="my-5">
                         {dummyAds.map((ad, index) => (
                             <Col key={index} xs={24} sm={12} md={8} lg={6}>
-                                <AdCard {...ad} />
+                                <AdCard id={0} {...ad} />
                             </Col>
                         ))}
                     </StyledRow>

@@ -1,15 +1,16 @@
 import React from "react";
 import { Card, Rate } from "antd";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 const { Meta } = Card;
 
 interface AdCardProps {
+  id?: number;
   title: string;
   imageUrl: string;
   description: string;
   price: number;
-  rating?: number;
 }
 
 const StyledCard = styled(Card)`
@@ -18,11 +19,15 @@ const StyledCard = styled(Card)`
   margin: 10px;
   padding: 5px;
   border-radius: 0;
+  position: relative;
+  cursor:default;
 `;
+
 const Price = styled.div`
   position: absolute;
   bottom: 7px;
   left: 27px;
+  color: #ff000c;
 `;
 
 const Rating = styled.div`
@@ -32,28 +37,32 @@ const Rating = styled.div`
   .ant-rate-star.ant-rate-star-full {
     margin-inline-end: 0; 
   }
-  .ant-rate-star.ant-rate-star-zero{
+  .ant-rate-star.ant-rate-star-zero {
     margin-inline-end: 0; 
   }
 `;
 
-const AdCard: React.FC<AdCardProps> = ({ title, imageUrl, description, price, rating }) => {
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`
+
+const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrl, description, price }) => {
   return (
     <StyledCard
       hoverable
       cover={<img style={{ borderRadius: 2 }} alt="ad" src={imageUrl} />}
     >
-      <Meta title={title} description={description} />
+      <StyledLink to={`/ad/${id}`}>
 
-      <Price>${price}</Price>
-      <Rating>
-        <Rate disabled defaultValue={rating} />
-      </Rating>
+        <Meta title={title} description={description} />
+        <Price>${price}</Price>
+        {/* <Rating>
+          <Rate disabled defaultValue={rating} />
+        </Rating> */}
+      </StyledLink>
 
     </StyledCard>
   );
 };
-
-
 
 export default AdCard;

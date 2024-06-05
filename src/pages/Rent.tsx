@@ -314,11 +314,11 @@ const Rent: React.FC = () => {
                                 ads.map((ad, index) => (
                                     <Col key={index} xs={24} sm={12} md={12} lg={8} xl={8}>
                                         <AdCard
+                                            id={ad.id}
                                             title={ad.title}
                                             imageUrl={ad.imageUrl || `https://via.placeholder.com/150`}
                                             description={ad.description}
                                             price={ad.price}
-                                            rating={ad.rating}
                                         />
                                     </Col>
                                 ))) : (

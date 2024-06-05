@@ -1,4 +1,5 @@
 export interface Ad {
+    id?: number
     title: string;
     description: string;
     price: number;
@@ -11,5 +12,4 @@ export interface Ad {
     color: string;
     car_type: string;
     fuel_type: string;
-    rating: number;
 }

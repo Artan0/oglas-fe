@@ -121,11 +121,11 @@ const UserProfile: React.FC = () => {
                                 {userAds.map((ad, index) => (
                                     <Col key={index} xs={24} sm={12} md={12} lg={8} xl={8}>
                                         <AdCard
+                                            id={ad.id}
                                             title={ad.title}
                                             imageUrl={ad.imageUrl}
                                             description={ad.description}
                                             price={ad.price}
-                                            rating={ad.rating}
                                         />
                                     </Col>
                                 ))}
