@@ -11,6 +11,7 @@ import Rent from './pages/Rent';
 import { UserProvider } from './context/User-context';
 import UserProfile from './pages/User-Profile';
 import AddAd from './pages/Add-Ad';
+import EditAd from './pages/Edit-Ad';
 
 function App() {
   return (
@@ -26,7 +27,7 @@ function App() {
           <Route path="/rent" element={<Rent />} />
           <Route path="/profile" element={<UserProfile />} />
           <Route path="/add-ad" element={<AddAd />} />
-
+          <Route path="/edit/:id" element={<EditAd />} />
           {/*routes here*/}
         </Routes>
       </Router>

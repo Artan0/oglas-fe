@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CustomLayout from "../layouts/layout";
-import { Row, Col, Carousel, Typography } from "antd";
+import { Row, Col, Carousel, Typography, Button } from "antd";
 import { Container } from "react-bootstrap";
 import AdCard from "../components/AdCard";
 import styled from "styled-components";
@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 // Use type-only import to avoid conflicts
 import type { AdDetails as AdDetailsType } from "../types/Ad-detail";
 import { UserOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
+import { useUser } from "../context/User-context";
 
 const adImages = [
     "https://via.placeholder.com/800x400",
@@ -51,7 +52,9 @@ const AdDetails: React.FC = () => {
     const [adDetails, setAdDetails] = useState<AdDetailsType>();
     const [similarAds, setSimilarAds] = useState<AdDetailsType[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    // const map = simplemaps_countrymap_mapdata
+    const { user } = useUser();
+    const isOwner = user && adDetails && user.id === adDetails.owner.id;
+
     useEffect(() => {
 
         setLoading(true);
@@ -71,6 +74,9 @@ const AdDetails: React.FC = () => {
     if (loading) {
         return <div>Loading...</div>;
     }
+    const handleEditClick = () => {
+        window.location.href = `/edit/${id}`;
+    };
 
     return (
         <CustomLayout>
@@ -111,7 +117,15 @@ const AdDetails: React.FC = () => {
                             </Row>
                         </StyledOwnerInfo>
                         <StyledAdInfo>
-                            <h4>Ad Details</h4>
+                            <div className="d-flex justify-content-between">
+                                <h4>Ad Details</h4>
+
+                                {isOwner && (
+                                    <Button type="primary" onClick={handleEditClick}>
+                                        Edit Ad
+                                    </Button>
+                                )}
+                            </div>
                             <p><strong>Title:</strong> {adDetails?.title}</p>
                             <p><strong>Ad Type:</strong> {adDetails?.ad_type}</p>
                             <p><strong>Location:</strong> {adDetails?.location}</p>
