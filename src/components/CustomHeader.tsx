@@ -1,8 +1,12 @@
-import React, { Component, useEffect, useState } from "react";
-import { Layout, Menu, Button } from 'antd';
+import React, { useEffect, useState } from "react";
+import { Layout, Menu, Button, Badge, Drawer, List, Card, Tooltip, message } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import { useUser } from "../context/User-context";
+import { HeartOutlined, DeleteOutlined } from '@ant-design/icons';
+import axiosInstance from "../api";
+import { Wishlist } from "../types/Wishlist";
+
 const { Header } = Layout;
 
 const StyledHeader = styled(Header) <{ isFixed: boolean }>`
@@ -49,12 +53,104 @@ const MenuItem = styled(Menu.Item)`
     font-size: 18px;
 `;
 
-interface CustomHeaderProps {
-}
+const StyledWishlistDescription = styled.div`
+    display: flex;
+    justify-content: space-between;
+    height: 75px;
+    flex-direction: column;
+`;
 
-const CustomHeader: React.FC<CustomHeaderProps> = () => {
+const WishlistDrawer: React.FC<{ visible: boolean; onClose: () => void }> = ({ visible, onClose }) => {
+    const [wishlistItems, setWishlistItems] = useState([]);
+
+    const fetchWishlistItems = async () => {
+        try {
+            const token = localStorage.getItem('authToken');
+            const response = await axiosInstance.get('/wishlist/', {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            });
+            setWishlistItems(response.data);
+        } catch (error) {
+            console.error('Error fetching wishlist items:', error);
+        }
+    };
+
+    useEffect(() => {
+        if (visible) {
+            fetchWishlistItems();
+        }
+    }, [visible]);
+
+    const handleRemoveFromWishlist = async (adId: number) => {
+        try {
+            const token = localStorage.getItem('authToken');
+            await axiosInstance.delete(`/wishlist/remove/${adId}/`, {
+                headers: {
+                    'Authorization': `Token ${token}`,
+                }
+            });
+            message.success('Item removed from wishlist');
+            fetchWishlistItems();
+        } catch (error: any) {
+            if (error.response && error.response.data && error.response.data.message) {
+                message.error(error.response.data.message);
+            } else {
+                console.error('Error removing item from wishlist:', error);
+                message.error('Failed to remove item from wishlist. Please try again later.');
+            }
+        }
+    };
+
+    return (
+        <Drawer
+            title="Wishlist"
+            placement="right"
+            closable={true}
+            onClose={onClose}
+            open={visible}
+            width={360}
+        >
+            <List
+                dataSource={wishlistItems}
+                renderItem={(item: any) => (
+                    <List.Item
+                        actions={[
+                            <Tooltip title="Remove from Wishlist">
+                                <DeleteOutlined
+                                    style={{ fontSize: '20px', color: 'red' }}
+                                    onClick={() => handleRemoveFromWishlist(item.ad.id)}
+                                />
+                            </Tooltip>
+                        ]}
+                    >
+                        <StyledLink className="text-dark" to={`/ad/${item.ad.id}`}>
+                            <List.Item.Meta
+                                style={{ width: '220px' }}
+                                avatar={<img src={item.ad.imageUrl} alt={item.ad.title} style={{ width: 80, height: 80, objectFit: 'cover' }} />}
+                                description={
+                                    <StyledWishlistDescription>
+                                        <div><strong style={{ fontSize: '16px' }}>{item.ad.title}</strong></div>
+                                        <div>Price: ${item.ad.price}</div>
+                                    </StyledWishlistDescription>
+                                }
+                            />
+                        </StyledLink>
+                    </List.Item>
+
+                )}
+            />
+        </Drawer>
+    );
+};
+
+const CustomHeader: React.FC = () => {
     const { user, setUser } = useUser();
     const [isFixed, setIsFixed] = useState(false);
+    const [wishlistVisible, setWishlistVisible] = useState(false);
+    const [wishlistItems, setWishlistItems] = useState<Wishlist[]>([]);
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -75,17 +171,24 @@ const CustomHeader: React.FC<CustomHeaderProps> = () => {
             setUser(null);
         }
         localStorage.removeItem('authToken');
-        navigate("/authentication")
+        navigate("/authentication");
+    };
+
+    const showWishlistDrawer = () => {
+        setWishlistVisible(true);
+    };
+
+    const onCloseWishlistDrawer = () => {
+        setWishlistVisible(false);
     };
 
     return (
         <StyledHeader isFixed={isFixed}>
             <Nav>
-                {/* <Logo src="/logo.png" alt="Logo" /> */}
                 <h1 className="text-black">Oglas</h1>
                 <Menu className="d-flex justify-content-center" theme="light" mode="horizontal" style={{ minWidth: 0, flex: "auto" }}>
                     <MenuItem key="home">
-                        <StyledLink to="/">Home </StyledLink>
+                        <StyledLink to="/">Home</StyledLink>
                     </MenuItem>
                     <MenuItem key="rent">
                         <StyledLink to="/rent">Rent</StyledLink>
@@ -102,19 +205,23 @@ const CustomHeader: React.FC<CustomHeaderProps> = () => {
                 </Menu>
                 <UserSection>
                     {user ? (
-                        <>
-                            <StyledLink to="/profile"> <span className="text-dark px-2"> {user.username}</span></StyledLink>
-                            <Button onClick={handleLogout} shape="round" size="large" >Logout</Button>
-                        </>
+                        <div>
+                            <Badge count={wishlistItems.length}>
+                                <HeartOutlined style={{ fontSize: '24px', cursor: 'pointer' }} onClick={showWishlistDrawer} />
+                            </Badge>
+                            <StyledLink to="/profile"><span className="text-dark px-2">{user.username}</span></StyledLink>
+                            <Button onClick={handleLogout} shape="round" size="large">Logout</Button>
+                        </div>
                     ) : (
                         <AuthList>
-                            <StyledLink to="/authentication" style={{ textDecoration: 'none' }}><Button shape="round" size="large" >Login</Button></StyledLink>
+                            <StyledLink to="/authentication" style={{ textDecoration: 'none' }}><Button shape="round" size="large">Login</Button></StyledLink>
                             <span className='mx-2'></span>
                             <StyledLink to="/authentication" style={{ textDecoration: 'none', color: '#fff' }}><Button shape="round" size="large" type="primary">Register</Button></StyledLink>
                         </AuthList>
                     )}
                 </UserSection>
             </Nav>
+            <WishlistDrawer visible={wishlistVisible} onClose={onCloseWishlistDrawer} />
         </StyledHeader>
     );
 };
