@@ -7,10 +7,9 @@ import styled from "styled-components";
 import withParams from "../components/HOC";
 import axiosInstance from "../api";
 import { useParams } from "react-router-dom";
-// Use type-only import to avoid conflicts
 import type { AdDetails as AdDetailsType } from "../types/Ad-detail";
-import { UserOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
 import { useUser } from "../context/User-context";
+import { PersonOutline, MailOutline, PhoneOutlined, LocationOnOutlined, AttachMoneyOutlined, HomeOutlined, CategoryOutlined } from "@mui/icons-material";
 
 const adImages = [
     "https://via.placeholder.com/800x400",
@@ -98,20 +97,20 @@ const AdDetails: React.FC = () => {
                             <Row gutter={[16, 16]}>
                                 <Col span={24}>
                                     <div className="d-flex align-items-center">
-                                        <UserOutlined style={{ marginRight: '8px', fontSize: '20px' }} />
+                                        <PersonOutline style={{ marginRight: '8px', fontSize: '20px' }} />
                                         <StyledUserInfo>{adDetails?.owner.first_name} {adDetails?.owner?.last_name}</StyledUserInfo>
                                     </div>
                                 </Col>
                                 <Col span={24}>
                                     <div className="d-flex align-items-center">
-                                        <MailOutlined style={{ marginRight: '8px', fontSize: '20px' }} />
+                                        <MailOutline style={{ marginRight: '8px', fontSize: '20px' }} />
                                         <StyledUserInfo > {adDetails?.owner?.email}</StyledUserInfo>
                                     </div>
                                 </Col>
                                 <Col span={24}>
                                     <div className="d-flex align-items-center">
                                         <PhoneOutlined style={{ marginRight: '8px', fontSize: '20px' }} />
-                                        <StyledUserInfo > {adDetails?.owner?.phone_number}</StyledUserInfo>
+                                        <StyledUserInfo > {adDetails?.owner?.phone_number || 'no phone number'}</StyledUserInfo>
                                     </div>
                                 </Col>
                             </Row>
@@ -128,10 +127,10 @@ const AdDetails: React.FC = () => {
                             </div>
                             <p><strong>Title:</strong> {adDetails?.title}</p>
                             <p><strong>Ad Type:</strong> {adDetails?.ad_type}</p>
-                            <p><strong>Location:</strong> {adDetails?.location}</p>
-                            <p><strong>Price:</strong> {adDetails?.price}</p>
-                            <p><strong>Address:</strong> {adDetails?.address}</p>
-                            <p><strong>Category:</strong> {adDetails?.category}</p>
+                            <p><strong><LocationOnOutlined /> Location:</strong> {adDetails?.location}</p>
+                            <p><strong><AttachMoneyOutlined /> Price:</strong> {adDetails?.price}</p>
+                            <p><strong><HomeOutlined /> Address:</strong> {adDetails?.address}</p>
+                            <p><strong><CategoryOutlined /> Category:</strong> {adDetails?.category}</p>
                         </StyledAdInfo>
                     </Col>
                 </Row>

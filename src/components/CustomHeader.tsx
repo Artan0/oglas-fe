@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Menu, Button, Badge, Drawer, List, Card, Tooltip, message } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Layout, Menu, Button, Badge, Drawer, List, Tooltip, message, Dropdown } from 'antd';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useUser } from "../context/User-context";
-import { HeartOutlined, DeleteOutlined } from '@ant-design/icons';
+import { HeartOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
 import axiosInstance from "../api";
 import { Wishlist } from "../types/Wishlist";
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 const { Header } = Layout;
 
@@ -20,7 +21,7 @@ const StyledHeader = styled(Header) <{ isFixed: boolean }>`
     position: ${(props) => (props.isFixed ? 'fixed' : 'absolute')};
     top: ${(props) => (props.isFixed ? '0' : 'auto')};
     transition: top 0.4s ease-out, opacity 0.4s ease-out, background-color 0.4s ease-out;
-    opacity: ${(props) => (props.isFixed ? 0.95 : 1)};
+    opacity: ${(props) => (props.isFixed ? 1 : 1)};
 `;
 
 const Logo = styled.img`
@@ -47,10 +48,7 @@ const AuthList = styled.div`
 
 const StyledLink = styled(Link)`
     text-decoration: none;
-`;
-
-const MenuItem = styled(Menu.Item)`
-    font-size: 18px;
+    font-size: 1rem;
 `;
 
 const StyledWishlistDescription = styled.div`
@@ -150,7 +148,7 @@ const CustomHeader: React.FC = () => {
     const [isFixed, setIsFixed] = useState(false);
     const [wishlistVisible, setWishlistVisible] = useState(false);
     const [wishlistItems, setWishlistItems] = useState<Wishlist[]>([]);
-
+    const location = useLocation();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -182,41 +180,88 @@ const CustomHeader: React.FC = () => {
         setWishlistVisible(false);
     };
 
+    const determineActiveMenuItem = (path: string) => {
+        switch (path) {
+            case '/':
+                return ['home'];
+            case '/rent':
+                return ['rent'];
+            case '/ads':
+                return ['explore'];
+            case '/about':
+                return ['about'];
+            case '/auction':
+                return ['auction'];
+            default:
+                return [''];
+        }
+    };
+
+    const activeMenuItem = determineActiveMenuItem(location.pathname);
+
+    const menu = (
+        <Menu>
+            <Menu.Item key="1" onClick={showWishlistDrawer} >
+                <Badge count={wishlistItems.length}>
+                    <FavoriteBorderIcon style={{ fontSize: '20px', cursor: 'pointer', marginRight: '2px' }} />
+                    <span style={{ fontSize: '1rem' }} >Wishlist</span>
+                </Badge>
+            </Menu.Item>
+            <Menu.Item key="2">
+                <StyledLink to="/profile">
+                    <UserOutlined style={{ marginRight: '8px' }} />
+                    My Profile
+                </StyledLink>
+            </Menu.Item>
+        </Menu>
+    );
+
     return (
         <StyledHeader isFixed={isFixed}>
             <Nav>
-                <h1 className="text-black">Oglas</h1>
-                <Menu className="d-flex justify-content-center" theme="light" mode="horizontal" style={{ minWidth: 0, flex: "auto" }}>
-                    <MenuItem key="home">
+                <h1 style={{ width: '15%' }} className="text-black text-start">Oglas</h1>
+                <Menu
+                    className="d-flex justify-content-center"
+                    theme="light"
+                    mode="horizontal"
+                    style={{ minWidth: 0, flex: "auto" }}
+                    selectedKeys={activeMenuItem}
+                >
+                    <Menu.Item key="home">
                         <StyledLink to="/">Home</StyledLink>
-                    </MenuItem>
-                    <MenuItem key="rent">
+                    </Menu.Item>
+                    <Menu.Item key="rent">
                         <StyledLink to="/rent">Rent</StyledLink>
-                    </MenuItem>
-                    <MenuItem key="explore">
+                    </Menu.Item>
+                    <Menu.Item key="explore">
                         <StyledLink to="/ads">Explore</StyledLink>
-                    </MenuItem>
-                    <MenuItem key="about">
+                    </Menu.Item>
+                    <Menu.Item key="about">
                         <StyledLink to="/about">About Us</StyledLink>
-                    </MenuItem>
-                    <MenuItem key="auction">
+                    </Menu.Item>
+                    <Menu.Item key="auction">
                         <StyledLink to="/auction">Auction</StyledLink>
-                    </MenuItem>
+                    </Menu.Item>
                 </Menu>
                 <UserSection>
                     {user ? (
-                        <div>
-                            <Badge count={wishlistItems.length}>
-                                <HeartOutlined style={{ fontSize: '24px', cursor: 'pointer' }} onClick={showWishlistDrawer} />
-                            </Badge>
-                            <StyledLink to="/profile"><span className="text-dark px-2">{user.username}</span></StyledLink>
+                        <>
+                            <Dropdown overlay={menu} placement="bottomRight">
+                                <div>
+                                    <span style={{ cursor: 'pointer' }} className="text-dark px-2">{user.username}</span>
+                                </div>
+                            </Dropdown>
                             <Button onClick={handleLogout} shape="round" size="large">Logout</Button>
-                        </div>
+                        </>
                     ) : (
                         <AuthList>
-                            <StyledLink to="/authentication" style={{ textDecoration: 'none' }}><Button shape="round" size="large">Login</Button></StyledLink>
+                            <StyledLink to="/authentication" style={{ textDecoration: 'none' }}>
+                                <Button shape="round" size="large">Login</Button>
+                            </StyledLink>
                             <span className='mx-2'></span>
-                            <StyledLink to="/authentication" style={{ textDecoration: 'none', color: '#fff' }}><Button shape="round" size="large" type="primary">Register</Button></StyledLink>
+                            <StyledLink to="/authentication" style={{ textDecoration: 'none', color: '#fff' }}>
+                                <Button shape="round" size="large" type="primary">Register</Button>
+                            </StyledLink>
                         </AuthList>
                     )}
                 </UserSection>
@@ -227,3 +272,4 @@ const CustomHeader: React.FC = () => {
 };
 
 export default CustomHeader;
+

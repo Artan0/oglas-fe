@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import CustomLayout from "../layouts/layout";
 import { Form, Input, Select, Button, InputNumber, Card, Col, Row, Upload, message, UploadFile, Modal } from "antd";
 import { Container } from "react-bootstrap";
-import { UploadOutlined } from '@ant-design/icons';
+import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { imgDB } from "../setup/firebase";
 import axiosInstance from "../api";
@@ -166,7 +166,7 @@ const EditAd: React.FC = () => {
         setFormData(prevFormData => ({ ...prevFormData, car_type: value }));
     };
 
-    const csrftoken = Cookies.get('csrftoken'); // Get the CSRF token using js-cookie
+    const csrftoken = Cookies.get('csrftoken');
 
     const handleFormSubmit = async () => {
         try {
@@ -219,6 +219,7 @@ const EditAd: React.FC = () => {
                         <p>Are you sure you want to delete this ad?</p>
                     </Modal>
                     <Col xs={24} sm={24} md={16} lg={14} xl={14}>
+
                         <Card className="">
                             <Form style={{ maxWidth: '600px' }}
                                 form={form}
@@ -360,7 +361,7 @@ const EditAd: React.FC = () => {
                                 <Form.Item>
 
                                     <Button className="m-1" size="large" type="primary" htmlType="submit">Submit</Button>
-                                    <Button className="m-1" size="large" danger type="primary" onClick={showDeleteModal}>Delete Ad</Button>
+                                    <Button className="m-1" size="large" danger type="primary" icon={<DeleteOutlined />} iconPosition="end" onClick={showDeleteModal}>Delete Ad</Button>
 
                                 </Form.Item>
                             </Form>

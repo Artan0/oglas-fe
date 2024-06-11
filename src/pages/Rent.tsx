@@ -8,6 +8,7 @@ import styled from "styled-components";
 import moment, { Moment } from "moment";
 import { Ad } from "../types/Ad";
 import { Pagination } from "@mui/material";
+import { FunnelPlotOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -238,7 +239,7 @@ const Rent: React.FC = () => {
                                             </Select>
                                         </StyledDiv>
                                         <StyledDiv>
-                                            <Select className="mt-3" placeholder="Car"
+                                            <Select style={{ width: '33%' }} className="mt-3" placeholder="Car"
                                                 size="large" value={filters.car_type || undefined} onChange={(value) => { handleFilterChange('car_type', value); }}>
                                                 <Option value="">All </Option>
 
@@ -246,7 +247,7 @@ const Rent: React.FC = () => {
                                                     <Option key={index} value={car_type}>{car_type}</Option>
                                                 ))}
                                             </Select>
-                                            <Select className="mt-3" placeholder="Fuel"
+                                            <Select style={{ width: '33%' }} className="mt-3" placeholder="Fuel"
                                                 size="large" value={filters.fuelType || undefined} onChange={(value) => { handleFilterChange('fuelType', value); }}>
                                                 <Option value="">All </Option>
 
@@ -255,7 +256,7 @@ const Rent: React.FC = () => {
                                                 ))}
                                             </Select>
 
-                                            <Select className="mt-3" placeholder="Color" size="large" value={filters.color || undefined} onChange={(value) => handleFilterChange('color', value)}>
+                                            <Select style={{ width: '33%' }} className="mt-3" placeholder="Color" size="large" value={filters.color || undefined} onChange={(value) => handleFilterChange('color', value)}>
                                                 <Option value="">All </Option>
                                                 {colors.map((color, index) => (
                                                     <Option key={index} value={color}>{color}</Option>
@@ -301,7 +302,7 @@ const Rent: React.FC = () => {
                     <Col xs={24} sm={24} md={18} lg={18} xl={18}>
                         <div className="d-flex justify-content-between">
                             <Input.Search size="large" className="w-50" placeholder="Search by title" onSearch={handleSearch} />
-                            <Select size="large" value={sortOption} onChange={handleSortChange}>
+                            <Select style={{ width: '13%' }} size="large" suffixIcon={<FunnelPlotOutlined style={{ fontSize: '18px', color: "black", cursor: 'default' }} />} value={sortOption} onChange={handleSortChange}>
                                 <Option value="newest">Newest</Option>
                                 <Option value="oldest">Oldest</Option>
                                 <Option value="priceLowToHigh">Price: Low to High</Option>
@@ -319,6 +320,8 @@ const Rent: React.FC = () => {
                                             imageUrl={ad.imageUrl || `https://via.placeholder.com/150`}
                                             description={ad.description}
                                             price={ad.price}
+                                            isCar={ad.category === "car"}
+                                            car_details={ad.car_details}
                                         />
                                     </Col>
                                 ))) : (

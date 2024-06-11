@@ -10,6 +10,7 @@ import rentCarImage from "../assets/images/rent_car.png";
 import coloredMapImage from "../assets/images/colored_map.jpg";
 import carImage from "../assets/images/car.jpg";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import { SearchOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
 
@@ -219,7 +220,7 @@ class LandingPage extends Component<HomeState> {
                                 <Input size="large" placeholder="Search..." style={{ width: 200 }} onChange={(e) => this.handleChange('searchTitle', e.target.value)} />
                             </FormItem>
                             <FormItem>
-                                <SearchButton size="large" type="primary" htmlType="submit">
+                                <SearchButton size="large" type="primary" htmlType="submit" icon={<SearchOutlined />} iconPosition="end">
                                     Find Now
                                 </SearchButton>
                             </FormItem>

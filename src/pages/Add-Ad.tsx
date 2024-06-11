@@ -134,7 +134,7 @@ const AddAd: React.FC = () => {
             });
 
             console.log("Form Data:", formDataWithImages);
-
+            window.location.href = "/profile";
             message.success("Ad submitted successfully!");
         } catch (error) {
             console.error("Error submitting ad:", error);

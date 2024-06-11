@@ -9,7 +9,9 @@ import axiosInstance from "../api";
 import { useNavigate } from "react-router-dom";
 import { Ad } from "../types/Ad";
 import Pagination from "@mui/material/Pagination";
-
+import { PersonOutline, PhoneOutlined } from "@mui/icons-material";
+import BadgeIcon from '@mui/icons-material/Badge';
+import { EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
 
@@ -103,11 +105,11 @@ const UserProfile: React.FC = () => {
                                     title={user.username}
                                     description={user.email}
                                 />
-                                <Paragraph style={{ marginTop: '1rem' }}><b>First Name:</b> {user.first_name}</Paragraph>
-                                <Paragraph style={{ marginTop: '1rem' }}><b>Last Name:</b> {user.last_name}</Paragraph>
-                                <Paragraph style={{ marginTop: '1rem' }}><b>Phone:</b> {user.phone_number}</Paragraph>
+                                <Paragraph style={{ marginTop: '1rem' }}><BadgeIcon /><b className="mx-1">First Name:</b> {user.first_name}</Paragraph>
+                                <Paragraph style={{ marginTop: '1rem' }}><BadgeIcon /><b className="mx-1">Last Name:</b> {user.last_name}</Paragraph>
+                                <Paragraph style={{ marginTop: '1rem' }}><PhoneOutlined /><b className="mx-1">Phone:</b> {user.phone_number}</Paragraph>
 
-                                <Button type="primary" style={{ marginTop: '1rem' }} onClick={showModal}>Edit Profile</Button>
+                                <Button type="primary" style={{ marginTop: '1rem' }} icon={<EditOutlined />} iconPosition="end" onClick={showModal}>Edit Profile</Button>
                             </UserInfoCard>
                         )}
                     </Col>
@@ -115,7 +117,7 @@ const UserProfile: React.FC = () => {
                         <MyAdsSection>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <Title level={3}>My Ads</Title>
-                                <Button size="large" type="primary" onClick={() => navigate('/add-ad')}>Add Ad</Button>
+                                <Button size="large" type="primary" icon={<PlusCircleOutlined style={{ fontSize: '18px' }} />} iconPosition={"end"} onClick={() => navigate('/add-ad')}>Add Ad</Button>
                             </div>
                             <Row gutter={[16, 16]}>
                                 {userAds.map((ad, index) => (
@@ -126,6 +128,8 @@ const UserProfile: React.FC = () => {
                                             imageUrl={ad.imageUrl}
                                             description={ad.description}
                                             price={ad.price}
+                                            isCar={ad.category === "car"}
+                                            car_details={ad.car_details}
                                         />
                                     </Col>
                                 ))}

@@ -2,6 +2,9 @@ import { Layout, Row, Col, Divider, Typography, Menu } from 'antd';
 import { FacebookOutlined, TwitterOutlined, InstagramOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { Component } from 'react';
+import { Link } from 'react-router-dom';
+import { MailOutlineOutlined } from '@mui/icons-material';
+import Paragraph from 'antd/es/skeleton/Paragraph';
 
 const { Footer } = Layout;
 const { Text } = Typography;
@@ -50,6 +53,9 @@ const StyledDivider = styled(Divider)`
   background-color: #fff;
 `;
 
+const StyledLink = styled(Link)`
+  text-decoration: none;
+`
 class CustomFooter extends Component {
   render() {
     return (
@@ -60,27 +66,28 @@ class CustomFooter extends Component {
             <FooterText>Description about the company goes here.</FooterText>
           </FooterColumn>
           <FooterColumn lg={{ span: 4 }} md={{ span: 12 }} sm={{ span: 12 }}>
-            <FooterHeading>Useful Links</FooterHeading>
+            <FooterHeading>Support Us!</FooterHeading>
             <FooterMenu>
-              <Menu.Item className='text-white' key="1">Link 1</Menu.Item>
-              <Menu.Item className='text-white' key="2">Link 2</Menu.Item>
-              <Menu.Item className='text-white' key="3">Link 3</Menu.Item>
+              <p className='text-white mt-3'>Lorem ipsum dolor sit amet</p>
             </FooterMenu>
           </FooterColumn>
           <FooterColumn lg={{ span: 4 }} md={{ span: 12 }} sm={{ span: 12 }}>
-            <FooterHeading>Explore</FooterHeading>
+            <FooterHeading>Pages</FooterHeading>
             <FooterMenu>
-              <Menu.Item className='text-white' key="4">Explore 1</Menu.Item>
-              <Menu.Item className='text-white' key="5">Explore 2</Menu.Item>
-              <Menu.Item className='text-white' key="6">Explore 3</Menu.Item>
+              <Menu.Item className='text-white' key="1"><StyledLink to={'/'}>Home</StyledLink></Menu.Item>
+              <Menu.Item className='text-white' key="2"><StyledLink to={'/rent'}>Rents</StyledLink></Menu.Item>
+              <Menu.Item className='text-white' key="3"><StyledLink to={'/ads'}>All Ads</StyledLink></Menu.Item>
+              <Menu.Item className='text-white' key="4"><StyledLink to={'/profile'}>My Profile</StyledLink></Menu.Item>
+              <Menu.Item className='text-white' key="5"><StyledLink to={'/about'}>About Us</StyledLink></Menu.Item>
+
             </FooterMenu>
           </FooterColumn>
           <FooterColumn lg={{ span: 4 }} md={{ span: 24 }} sm={{ span: 24 }}>
             <FooterHeading>Contact Us</FooterHeading>
             <FooterMenu>
-              <Menu.Item className='text-white' key="7" icon={<FacebookOutlined />}>Facebook</Menu.Item>
-              <Menu.Item className='text-white' key="8" icon={<TwitterOutlined />}>Twitter</Menu.Item>
-              <Menu.Item className='text-white' key="9" icon={<InstagramOutlined />}>Instagram</Menu.Item>
+              <Menu.Item className='text-white' key="6" icon={<FacebookOutlined style={{ fontSize: '20px' }} />} >Facebook</Menu.Item>
+              <Menu.Item className='text-white' key="7" icon={<MailOutlineOutlined style={{ fontSize: '20px' }} />}>oglasmk@gmail.com</Menu.Item>
+              <Menu.Item className='text-white' key="8" icon={<InstagramOutlined style={{ fontSize: '20px' }} />}>Instagram</Menu.Item>
             </FooterMenu>
           </FooterColumn>
         </FooterRow>

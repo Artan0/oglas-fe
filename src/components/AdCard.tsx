@@ -4,7 +4,8 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { HeartOutlined } from '@ant-design/icons';
 import axiosInstance from "../api";
-
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
+import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
 const { Meta } = Card;
 
 interface AdCardProps {
@@ -13,6 +14,15 @@ interface AdCardProps {
   imageUrl: string;
   description: string;
   price: number;
+  isCar?: boolean; // New boolean field to indicate if it's a car ad
+  car_details?: {
+    manufacturer: string;
+    car_type: string;
+    color: string;
+    fuel_type: string;
+    mileage: number;
+    year: number;
+  };
 }
 
 const StyledCard = styled(Card)`
@@ -27,7 +37,7 @@ const StyledCard = styled(Card)`
 
 const Price = styled.div`
   position: absolute;
-  bottom: 7px;
+  bottom: 10px;
   left: 27px;
   color: #ff000c;
 `;
@@ -37,10 +47,11 @@ const StyledLink = styled(Link)`
 `;
 const StyledTool = styled(Tooltip)`
   position: absolute;
-  bottom: 7px;
+  bottom: 12px;
   right:27px;
 `
-const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrl, description, price }) => {
+
+const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrl, description, price, isCar, car_details }) => {
   const handleAddToWishlist = async () => {
     try {
       const token = localStorage.getItem('authToken');
@@ -59,7 +70,6 @@ const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrl, description, price
         message.error('Failed to add item to wishlist. Please try again later.');
       }
     }
-
   };
 
   return (
@@ -68,9 +78,9 @@ const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrl, description, price
       cover={<img style={{ borderRadius: 2 }} alt="ad" src={imageUrl} />}
     >
       <StyledLink to={`/ad/${id}`}>
-        <Meta title={title} description={description} />
+        <Meta title={title} description={description?.length > 61 ? `${description.substring(0, 61)}...` : description}
+        />
         <Price>${price}</Price>
-
       </StyledLink>
       <StyledTool title="Add to Wishlist">
         <HeartOutlined
@@ -78,6 +88,13 @@ const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrl, description, price
           onClick={handleAddToWishlist}
         />
       </StyledTool>
+      {isCar && car_details && (
+        <div className="d-flex justify-content-between align-items-center mt-3">
+          <p className="d-flex justify-content-between align-items-center"><DirectionsCarIcon /> {car_details.car_type}</p>
+          <p className="d-flex justify-content-between align-items-center"><LocalGasStationIcon /> {car_details.fuel_type}</p>
+          {/* Add more car details here */}
+        </div>
+      )}
     </StyledCard>
   );
 };
