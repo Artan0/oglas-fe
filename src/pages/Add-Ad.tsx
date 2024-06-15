@@ -24,6 +24,7 @@ const AddAd: React.FC = () => {
     const [car_types, setCarTypes] = useState<string[]>([]);
     const [fuels, setFuel] = useState<string[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>();
+    const [image_urls, setImageUrls] = useState<string[]>([]);
     const [formData, setFormData] = useState<Ad>({
         title: "",
         description: "",
@@ -33,7 +34,7 @@ const AddAd: React.FC = () => {
         address: "",
         category: "",
         manufacturer: "",
-        imageUrl: "",
+        image_urls: [],
         color: "",
         car_type: "",
         fuel_type: "",
@@ -114,17 +115,20 @@ const AddAd: React.FC = () => {
 
     const handleFormSubmit = async () => {
         try {
-            const uploadedImages = await Promise.all(
+            const image_urls = await Promise.all(
                 fileList.map(async (file) => {
-                    const storageRef = ref(imgDB, `oglas/${file.name}`);
+                    const uniqueFilename = `${file.name}_${new Date().getTime()}_${Math.floor(Math.random() * 10000)}`;
+
+                    const storageRef = ref(imgDB, `oglas/${uniqueFilename}`);
+
                     await uploadBytes(storageRef, file.originFileObj as Blob);
                     return getDownloadURL(storageRef);
                 })
             );
-
+            setImageUrls(image_urls);
             const formDataWithImages = {
                 ...formData,
-                imageUrl: uploadedImages[0],
+                image_urls: image_urls,
             };
             const token = localStorage.getItem('authToken');
             await axiosInstance.post("/ad/add/", formDataWithImages, {
@@ -277,7 +281,7 @@ const AddAd: React.FC = () => {
                                 )}
                                 <Form.Item
                                     label="Images"
-                                    name="images"
+                                    name="image_urls"
                                     rules={[{ required: true, message: 'Please upload at least one image!' }]}
                                 >
                                     <Upload
@@ -297,7 +301,7 @@ const AddAd: React.FC = () => {
                     </Col>
                     <Col xs={24} sm={24} md={8} lg={7} xl={7}>
                         <div>
-                            <AdCard {...formData} imageUrl={previewImageUrl} />
+                            <AdCard {...formData} imageUrls={[previewImageUrl]} />
                         </div>
                     </Col>
                 </Row>

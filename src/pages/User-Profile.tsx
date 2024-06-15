@@ -125,7 +125,7 @@ const UserProfile: React.FC = () => {
                                         <AdCard
                                             id={ad.id}
                                             title={ad.title}
-                                            imageUrl={ad.imageUrl}
+                                            imageUrls={ad.image_urls}
                                             description={ad.description}
                                             price={ad.price}
                                             isCar={ad.category === "car"}

@@ -8,7 +8,7 @@ export interface Ad {
     address: string;
     category: string;
     manufacturer?: string;
-    imageUrl: string;
+    image_urls: string[];
     color: string;
     car_type: string;
     fuel_type: string;

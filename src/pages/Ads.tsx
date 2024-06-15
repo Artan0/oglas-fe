@@ -317,7 +317,7 @@ const Ads: React.FC = () => {
                                         <AdCard
                                             id={ad.id}
                                             title={ad.title}
-                                            imageUrl={ad.imageUrl || `https://via.placeholder.com/150`}
+                                            imageUrls={ad.image_urls || `https://via.placeholder.com/150`}
                                             description={ad.description}
                                             price={ad.price}
                                             isCar={ad.category === "car"}

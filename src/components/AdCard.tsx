@@ -6,12 +6,13 @@ import { HeartOutlined } from '@ant-design/icons';
 import axiosInstance from "../api";
 import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import LocalGasStationIcon from '@mui/icons-material/LocalGasStation';
+
 const { Meta } = Card;
 
 interface AdCardProps {
   id?: number;
   title: string;
-  imageUrl: string;
+  imageUrls: string[]; // Change imageUrl to imageUrls array
   description: string;
   price: number;
   isCar?: boolean; // New boolean field to indicate if it's a car ad
@@ -45,13 +46,14 @@ const Price = styled.div`
 const StyledLink = styled(Link)`
   text-decoration: none;
 `;
+
 const StyledTool = styled(Tooltip)`
   position: absolute;
   bottom: 12px;
   right:27px;
 `
 
-const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrl, description, price, isCar, car_details }) => {
+const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrls, description, price, isCar, car_details }) => {
   const handleAddToWishlist = async () => {
     try {
       const token = localStorage.getItem('authToken');
@@ -75,11 +77,10 @@ const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrl, description, price
   return (
     <StyledCard
       hoverable
-      cover={<img style={{ borderRadius: 2 }} alt="ad" src={imageUrl} />}
+      cover={<img style={{ borderRadius: 2 }} alt="ad" src={imageUrls[0]} />} // Display the first image
     >
       <StyledLink to={`/ad/${id}`}>
-        <Meta title={title} description={description?.length > 61 ? `${description.substring(0, 61)}...` : description}
-        />
+        <Meta title={title} description={description?.length > 61 ? `${description.substring(0, 61)}...` : description} />
         <Price>${price}</Price>
       </StyledLink>
       <StyledTool title="Add to Wishlist">

@@ -36,7 +36,7 @@ const EditAd: React.FC = () => {
         address: "",
         category: "",
         manufacturer: "",
-        imageUrl: "",
+        image_urls: [],
         color: "",
         car_type: "",
         fuel_type: "",

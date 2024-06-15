@@ -11,12 +11,6 @@ import type { AdDetails as AdDetailsType } from "../types/Ad-detail";
 import { useUser } from "../context/User-context";
 import { PersonOutline, MailOutline, PhoneOutlined, LocationOnOutlined, AttachMoneyOutlined, HomeOutlined, CategoryOutlined } from "@mui/icons-material";
 
-const adImages = [
-    "https://via.placeholder.com/800x400",
-    "https://via.placeholder.com/800x400",
-    "https://via.placeholder.com/800x400"
-];
-
 const StyledCarousel = styled(Carousel)`
     margin-bottom: 1rem;
     padding-right: 1rem;
@@ -44,7 +38,7 @@ const StyledOwnerInfo = styled.div`
 
 const StyledUserInfo = styled.h6`
     margin: 0
-`
+`;
 
 const AdDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
@@ -55,13 +49,10 @@ const AdDetails: React.FC = () => {
     const isOwner = user && adDetails && user.id === adDetails.owner.id;
 
     useEffect(() => {
-
         setLoading(true);
         axiosInstance.get(`/ad/${id}/`)
             .then(response => {
                 setAdDetails(response.data);
-            })
-            .then(response => {
                 setLoading(false);
             })
             .catch(error => {
@@ -70,9 +61,10 @@ const AdDetails: React.FC = () => {
             });
     }, [id]);
 
-    if (loading) {
+    if (loading || !adDetails) {
         return <div>Loading...</div>;
     }
+
     const handleEditClick = () => {
         window.location.href = `/edit/${id}`;
     };
@@ -83,14 +75,14 @@ const AdDetails: React.FC = () => {
                 <Row className="mt-5">
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <StyledCarousel autoplay>
-                            {adImages.map((src, index) => (
+                            {adDetails.image_urls.map((imageUrl, index) => (
                                 <div key={index}>
-                                    <img src={adDetails?.imageUrl} alt={`Ad ${index + 1}`} />
+                                    <img src={imageUrl} alt={`Ad ${index + 1}`} />
                                 </div>
                             ))}
                         </StyledCarousel>
                         <h3>Description</h3>
-                        <p>{adDetails?.description}</p>
+                        <p>{adDetails.description}</p>
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <StyledOwnerInfo>
@@ -98,19 +90,19 @@ const AdDetails: React.FC = () => {
                                 <Col span={24}>
                                     <div className="d-flex align-items-center">
                                         <PersonOutline style={{ marginRight: '8px', fontSize: '20px' }} />
-                                        <StyledUserInfo>{adDetails?.owner.first_name} {adDetails?.owner?.last_name}</StyledUserInfo>
+                                        <StyledUserInfo>{adDetails.owner.first_name} {adDetails.owner?.last_name}</StyledUserInfo>
                                     </div>
                                 </Col>
                                 <Col span={24}>
                                     <div className="d-flex align-items-center">
                                         <MailOutline style={{ marginRight: '8px', fontSize: '20px' }} />
-                                        <StyledUserInfo > {adDetails?.owner?.email}</StyledUserInfo>
+                                        <StyledUserInfo>{adDetails.owner?.email}</StyledUserInfo>
                                     </div>
                                 </Col>
                                 <Col span={24}>
                                     <div className="d-flex align-items-center">
                                         <PhoneOutlined style={{ marginRight: '8px', fontSize: '20px' }} />
-                                        <StyledUserInfo > {adDetails?.owner?.phone_number || 'no phone number'}</StyledUserInfo>
+                                        <StyledUserInfo>{adDetails.owner?.phone_number || 'no phone number'}</StyledUserInfo>
                                     </div>
                                 </Col>
                             </Row>
@@ -125,30 +117,30 @@ const AdDetails: React.FC = () => {
                                     </Button>
                                 )}
                             </div>
-                            <p><strong>Title:</strong> {adDetails?.title}</p>
-                            <p><strong>Ad Type:</strong> {adDetails?.ad_type}</p>
-                            <p><strong><LocationOnOutlined /> Location:</strong> {adDetails?.location}</p>
-                            <p><strong><AttachMoneyOutlined /> Price:</strong> {adDetails?.price}</p>
-                            <p><strong><HomeOutlined /> Address:</strong> {adDetails?.address}</p>
-                            <p><strong><CategoryOutlined /> Category:</strong> {adDetails?.category}</p>
+                            <p><strong>Title:</strong> {adDetails.title}</p>
+                            <p><strong>Ad Type:</strong> {adDetails.ad_type}</p>
+                            <p><strong><LocationOnOutlined /> Location:</strong> {adDetails.location}</p>
+                            <p><strong><AttachMoneyOutlined /> Price:</strong> {adDetails.price}</p>
+                            <p><strong><HomeOutlined /> Address:</strong> {adDetails.address}</p>
+                            <p><strong><CategoryOutlined /> Category:</strong> {adDetails.category}</p>
                         </StyledAdInfo>
                     </Col>
                 </Row>
 
                 <h3 className="mt-5">Similar Ads</h3>
                 <Row gutter={[16, 16]}>
-                    {[...Array(4)].map((_, index) => (
+                    {similarAds.map((ad, index) => (
                         <Col key={index} xs={24} sm={12} md={12} lg={8} xl={6}>
                             <AdCard
-                                title={`Ad Title ${index + 1}`}
-                                imageUrl={`https://via.placeholder.com/150`}
-                                description="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-                                price={Math.floor(Math.random() * 5) + 1}
+                                id={ad.id}
+                                title={ad.title}
+                                imageUrls={ad.image_urls}
+                                description={ad.description}
+                                price={ad.price}
                             />
                         </Col>
                     ))}
                 </Row>
-
             </Container>
         </CustomLayout>
     );

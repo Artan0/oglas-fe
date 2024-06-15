@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Menu, Button, Badge, Drawer, List, Tooltip, message, Dropdown } from 'antd';
+import { Layout, Menu, Button, Badge, Drawer, List, Tooltip, message, Dropdown, MenuProps, Space } from 'antd';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useUser } from "../context/User-context";
@@ -59,7 +59,7 @@ const StyledWishlistDescription = styled.div`
 `;
 
 const WishlistDrawer: React.FC<{ visible: boolean; onClose: () => void }> = ({ visible, onClose }) => {
-    const [wishlistItems, setWishlistItems] = useState([]);
+    const [wishlistItems, setWishlistItems] = useState<Wishlist[]>([]);
 
     const fetchWishlistItems = async () => {
         try {
@@ -81,7 +81,7 @@ const WishlistDrawer: React.FC<{ visible: boolean; onClose: () => void }> = ({ v
         }
     }, [visible]);
 
-    const handleRemoveFromWishlist = async (adId: number) => {
+    const handleRemoveFromWishlist = async (adId: any) => {
         try {
             const token = localStorage.getItem('authToken');
             await axiosInstance.delete(`/wishlist/remove/${adId}/`, {
@@ -112,36 +112,39 @@ const WishlistDrawer: React.FC<{ visible: boolean; onClose: () => void }> = ({ v
         >
             <List
                 dataSource={wishlistItems}
-                renderItem={(item: any) => (
-                    <List.Item
-                        actions={[
-                            <Tooltip title="Remove from Wishlist">
-                                <DeleteOutlined
-                                    style={{ fontSize: '20px', color: 'red' }}
-                                    onClick={() => handleRemoveFromWishlist(item.ad.id)}
+                renderItem={(item: Wishlist) => {
+                    const imageUrl = item.ad.image_urls && item.ad.image_urls.length > 0 ? item.ad.image_urls[0] : 'default-image-url';
+                    return (
+                        <List.Item
+                            actions={[
+                                <Tooltip title="Remove from Wishlist">
+                                    <DeleteOutlined
+                                        style={{ fontSize: '20px', color: 'red' }}
+                                        onClick={() => handleRemoveFromWishlist(item.ad.id)}
+                                    />
+                                </Tooltip>
+                            ]}
+                        >
+                            <StyledLink className="text-dark" to={`/ad/${item.ad.id}`}>
+                                <List.Item.Meta
+                                    style={{ width: '220px' }}
+                                    avatar={<img src={imageUrl} alt={item.ad.title} style={{ width: 80, height: 80, objectFit: 'cover' }} />}
+                                    description={
+                                        <StyledWishlistDescription>
+                                            <div><strong style={{ fontSize: '16px' }}>{item.ad.title}</strong></div>
+                                            <div>Price: ${item.ad.price}</div>
+                                        </StyledWishlistDescription>
+                                    }
                                 />
-                            </Tooltip>
-                        ]}
-                    >
-                        <StyledLink className="text-dark" to={`/ad/${item.ad.id}`}>
-                            <List.Item.Meta
-                                style={{ width: '220px' }}
-                                avatar={<img src={item.ad.imageUrl} alt={item.ad.title} style={{ width: 80, height: 80, objectFit: 'cover' }} />}
-                                description={
-                                    <StyledWishlistDescription>
-                                        <div><strong style={{ fontSize: '16px' }}>{item.ad.title}</strong></div>
-                                        <div>Price: ${item.ad.price}</div>
-                                    </StyledWishlistDescription>
-                                }
-                            />
-                        </StyledLink>
-                    </List.Item>
-
-                )}
+                            </StyledLink>
+                        </List.Item>
+                    );
+                }}
             />
         </Drawer>
     );
 };
+
 
 const CustomHeader: React.FC = () => {
     const { user, setUser } = useUser();
@@ -198,7 +201,20 @@ const CustomHeader: React.FC = () => {
     };
 
     const activeMenuItem = determineActiveMenuItem(location.pathname);
+    const items: MenuProps['items'] = [
+        {
+            label: <StyledLink to="/profile">My Profile</StyledLink>,
+            key: '0',
+            icon: <UserOutlined style={{ fontSize: '20px', cursor: 'pointer', marginRight: '8px' }} />
+        },
+        {
+            label: <span style={{ fontSize: '1rem' }}> Wishlist</span>,
+            key: '1',
+            icon: <FavoriteBorderIcon style={{ fontSize: '20px', cursor: 'pointer', marginRight: '8px' }} />,
+            onClick: showWishlistDrawer
+        }
 
+    ];
     const menu = (
         <Menu>
             <Menu.Item key="1" onClick={showWishlistDrawer} >
@@ -246,12 +262,15 @@ const CustomHeader: React.FC = () => {
                 <UserSection>
                     {user ? (
                         <>
-                            <Dropdown overlay={menu} placement="bottomRight">
-                                <div>
-                                    <span style={{ cursor: 'pointer' }} className="text-dark px-2">{user.username}</span>
-                                </div>
-                            </Dropdown>
+
                             <Button onClick={handleLogout} shape="round" size="large">Logout</Button>
+                            <Dropdown menu={{ items }} trigger={['click']}>
+                                <a onClick={(e) => e.preventDefault()}>
+                                    <Space>
+                                        <span style={{ cursor: 'pointer' }} className="text-dark px-2">{user.username}</span>
+                                    </Space>
+                                </a>
+                            </Dropdown>
                         </>
                     ) : (
                         <AuthList>
@@ -272,4 +291,3 @@ const CustomHeader: React.FC = () => {
 };
 
 export default CustomHeader;
-
