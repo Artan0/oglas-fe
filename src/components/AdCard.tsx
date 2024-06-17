@@ -12,10 +12,10 @@ const { Meta } = Card;
 interface AdCardProps {
   id?: number;
   title: string;
-  imageUrls: string[]; // Change imageUrl to imageUrls array
+  imageUrls: string[];
   description: string;
   price: number;
-  isCar?: boolean; // New boolean field to indicate if it's a car ad
+  isCar?: boolean;
   car_details?: {
     manufacturer: string;
     car_type: string;
@@ -77,7 +77,7 @@ const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrls, description, pric
   return (
     <StyledCard
       hoverable
-      cover={<img style={{ borderRadius: 2 }} alt="ad" src={imageUrls[0]} />} // Display the first image
+      cover={<img style={{ borderRadius: 2 }} alt="ad" src={imageUrls[0]} />}
     >
       <StyledLink to={`/ad/${id}`}>
         <Meta title={title} description={description?.length > 61 ? `${description.substring(0, 61)}...` : description} />

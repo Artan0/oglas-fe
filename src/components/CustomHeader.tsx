@@ -262,8 +262,6 @@ const CustomHeader: React.FC = () => {
                 <UserSection>
                     {user ? (
                         <>
-
-                            <Button onClick={handleLogout} shape="round" size="large">Logout</Button>
                             <Dropdown menu={{ items }} trigger={['click']}>
                                 <a onClick={(e) => e.preventDefault()}>
                                     <Space>
@@ -271,6 +269,7 @@ const CustomHeader: React.FC = () => {
                                     </Space>
                                 </a>
                             </Dropdown>
+                            <Button onClick={handleLogout} shape="round" size="large">Logout</Button>
                         </>
                     ) : (
                         <AuthList>

@@ -101,6 +101,7 @@ const EditAd: React.FC = () => {
                 mileage: adData.car_details?.mileage
             });
             form.setFieldsValue(adData);
+            setSelectedCategory(adData.category);
             setFormData(adData);
             if (adData.imageUrl) {
                 setPreviewImageUrl(adData.imageUrl);
@@ -284,7 +285,7 @@ const EditAd: React.FC = () => {
                                     name="category"
                                     rules={[{ required: true, message: 'Please select the category!' }]}
                                 >
-                                    <Select size="large" value={selectedCategory} onSelect={value => setSelectedCategory(value)}>
+                                    <Select disabled size="large" value={selectedCategory} onSelect={value => setSelectedCategory(value)}>
                                         {categories.map((category, index) => (
                                             <Option key={index} value={category}>{category}</Option>
                                         ))}

@@ -14,11 +14,37 @@ import { PersonOutline, MailOutline, PhoneOutlined, LocationOnOutlined, AttachMo
 const StyledCarousel = styled(Carousel)`
     margin-bottom: 1rem;
     padding-right: 1rem;
-    img {
-        width: 100%;
-        max-height: 400px;
-        object-fit: cover;
-        border-radius: 8px;
+
+    .slick-slide {
+        text-align: center;
+        overflow: hidden;
+
+        img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+    }
+
+    .slick-dots {
+        bottom: -30px;
+
+        li {
+            width: 12px;
+            height: 12px;
+
+            button {
+                width: 12px;
+                height: 12px;
+                background-color: rgba(0, 0, 0, 0.25);
+                border-radius: 50%;
+            }
+
+            &.slick-active button {
+                background-color: rgba(0, 0, 0, 0.75);
+            }
+        }
     }
 `;
 
@@ -37,7 +63,7 @@ const StyledOwnerInfo = styled.div`
 `;
 
 const StyledUserInfo = styled.h6`
-    margin: 0
+    margin: 0;
 `;
 
 const AdDetails: React.FC = () => {
@@ -146,5 +172,4 @@ const AdDetails: React.FC = () => {
     );
 };
 
-// Wrap the AdDetails component with withParams to access URL parameters
 export default withParams(AdDetails);
