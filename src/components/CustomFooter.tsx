@@ -4,7 +4,6 @@ import styled from 'styled-components';
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { MailOutlineOutlined } from '@mui/icons-material';
-import Paragraph from 'antd/es/skeleton/Paragraph';
 
 const { Footer } = Layout;
 const { Text } = Typography;
@@ -12,24 +11,42 @@ const { Text } = Typography;
 const FooterContainer = styled(Footer)`
   background-color: #1c86cf;
   color: #fff;
+  padding: 24px 50px;
+  @media (max-width: 768px) {
+    padding: 24px 20px;
+  }
 `;
 
 const FooterColumn = styled(Col)`
   padding: 0 24px;
+  @media (max-width: 768px) {
+    padding: 0 12px;
+  }
 `;
 
 const FooterHeading = styled.h3`
   color: #fff;
+  @media (max-width: 768px) {
+    font-size: 18px;
+  }
 `;
 
 const FooterText = styled(Text)`
   color: #fff;
+  @media (max-width: 768px) {
+    font-size: 14px;
+  }
 `;
 
 const FooterRow = styled(Row)`
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap; 
+   @media (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+    flex-direction:column;
+  }
 `;
 
 const FooterMenu = styled(Menu)`
@@ -40,13 +57,19 @@ const FooterMenu = styled(Menu)`
 const SocialIcons = styled.div`
   display: flex;
   align-items: center;
-  justify-content:end;
+  justify-content: flex-end;
+  @media (max-width: 768px) {
+    justify-content: center;
+  }
 `;
 
 const FooterIcon = styled.span`
   color: #fff;
   font-size: 24px;
   margin-right: 16px;
+  @media (max-width: 768px) {
+    margin-right: 12px;
+  }
 `;
 
 const StyledDivider = styled(Divider)`
@@ -55,13 +78,18 @@ const StyledDivider = styled(Divider)`
 
 const StyledLink = styled(Link)`
   text-decoration: none;
-`
+  color: inherit;
+  &:hover {
+    color: #1890ff;
+  }
+`;
+
 class CustomFooter extends Component {
   render() {
     return (
       <FooterContainer>
-        <FooterRow gutter={[16, 16]}> {/* Add gutter for spacing between columns */}
-          <FooterColumn lg={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}> {/* Adjust span for different screen sizes */}
+        <FooterRow gutter={[16, 16]}>
+          <FooterColumn lg={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
             <FooterHeading>Logo</FooterHeading>
             <FooterText>Description about the company goes here.</FooterText>
           </FooterColumn>
@@ -74,20 +102,19 @@ class CustomFooter extends Component {
           <FooterColumn lg={{ span: 4 }} md={{ span: 12 }} sm={{ span: 12 }}>
             <FooterHeading>Pages</FooterHeading>
             <FooterMenu>
-              <Menu.Item className='text-white' key="1"><StyledLink to={'/'}>Home</StyledLink></Menu.Item>
-              <Menu.Item className='text-white' key="2"><StyledLink to={'/rent'}>Rents</StyledLink></Menu.Item>
-              <Menu.Item className='text-white' key="3"><StyledLink to={'/ads'}>All Ads</StyledLink></Menu.Item>
-              <Menu.Item className='text-white' key="4"><StyledLink to={'/profile'}>My Profile</StyledLink></Menu.Item>
-              <Menu.Item className='text-white' key="5"><StyledLink to={'/about'}>About Us</StyledLink></Menu.Item>
-
+              <Menu.Item key="1"><StyledLink className="text-white" to={'/'}>Home</StyledLink></Menu.Item>
+              <Menu.Item key="2"><StyledLink className="text-white" to={'/rent'}>Rents</StyledLink></Menu.Item>
+              <Menu.Item key="3"><StyledLink className="text-white" to={'/ads'}>All Ads</StyledLink></Menu.Item>
+              <Menu.Item key="4"><StyledLink className="text-white" to={'/profile'}>My Profile</StyledLink></Menu.Item>
+              <Menu.Item key="5"><StyledLink className="text-white" to={'/about'}>About Us</StyledLink></Menu.Item>
             </FooterMenu>
           </FooterColumn>
           <FooterColumn lg={{ span: 4 }} md={{ span: 24 }} sm={{ span: 24 }}>
             <FooterHeading>Contact Us</FooterHeading>
             <FooterMenu>
-              <Menu.Item className='text-white' key="6" icon={<FacebookOutlined style={{ fontSize: '20px' }} />} >Facebook</Menu.Item>
-              <Menu.Item className='text-white' key="7" icon={<MailOutlineOutlined style={{ fontSize: '20px' }} />}>oglasmk@gmail.com</Menu.Item>
-              <Menu.Item className='text-white' key="8" icon={<InstagramOutlined style={{ fontSize: '20px' }} />}>Instagram</Menu.Item>
+              <Menu.Item key="6" className="text-white" icon={<FacebookOutlined style={{ fontSize: '20px' }} />}>Facebook</Menu.Item>
+              <Menu.Item key="7" className="text-white" icon={<MailOutlineOutlined style={{ fontSize: '20px' }} />}>oglasmk@gmail.com</Menu.Item>
+              <Menu.Item key="8" className="text-white" icon={<InstagramOutlined style={{ fontSize: '20px' }} />}>Instagram</Menu.Item>
             </FooterMenu>
           </FooterColumn>
         </FooterRow>

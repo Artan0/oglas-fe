@@ -89,6 +89,9 @@ const SearchForm = styled(Form)`
   flex-wrap: wrap;
   gap: 16px;
   justify-content: center;
+  @media (max-width: 1024px) {
+    width:90%;
+    }
 `;
 
 const FormItem = styled(Form.Item)`
@@ -110,7 +113,24 @@ const Slogan = styled.h1`
   color: #333;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
   padding: 5px;
+  @media (max-width: 482px){
+    font-size:26px;
+  }
 `;
+
+const StyledText = styled.div`
+    width:90%;
+    padding:5px
+    @media (max-width: 1024px) {
+        width: 100%;
+        padding: 5px;
+    }
+`
+const StyledCol = styled(Col)`
+    display:flex;
+    justify-content:center;
+    text-align:center;
+`
 
 const dummyAds = [
     {
@@ -200,7 +220,7 @@ class LandingPage extends Component<HomeState> {
                     <ImageContainer className="mt-5">
                         <Slogan>Your Slogan Goes Here</Slogan>
                         <SearchForm className="mt-4" layout="inline" onFinish={this.handleSearch}>
-                            <FormItem name="category">
+                            <FormItem style={{ margin: 0 }} name="category">
                                 <Select size="large" placeholder="Select Category" style={{ width: 200 }} onChange={(value) => this.handleChange('selectedCategory', value)}>
                                     <Option value="">All</Option>
                                     {this.state.categories.map((category, index) => (
@@ -208,7 +228,7 @@ class LandingPage extends Component<HomeState> {
                                     ))}
                                 </Select>
                             </FormItem>
-                            <FormItem name="location">
+                            <FormItem style={{ margin: 0 }} name="location">
                                 <Select size="large" placeholder="Select Location" style={{ width: 200 }} onChange={(value) => this.handleChange('selectedLocation', value)}>
                                     <Option value="">All</Option>
                                     {this.state.cities.map((city, index) => (
@@ -216,10 +236,10 @@ class LandingPage extends Component<HomeState> {
                                     ))}
                                 </Select>
                             </FormItem>
-                            <FormItem name="text">
+                            <FormItem style={{ margin: 0 }} name="text">
                                 <Input size="large" placeholder="Search..." style={{ width: 200 }} onChange={(e) => this.handleChange('searchTitle', e.target.value)} />
                             </FormItem>
-                            <FormItem>
+                            <FormItem style={{ margin: 0 }}>
                                 <SearchButton size="large" type="primary" htmlType="submit" icon={<SearchOutlined />} iconPosition="end">
                                     Find Now
                                 </SearchButton>
@@ -236,8 +256,8 @@ class LandingPage extends Component<HomeState> {
                         ))}
                     </StyledRow>
                     <Row className="d-flex align-items-center my-5">
-                        <Col xs={12}>
-                            <div className="w-75">
+                        <StyledCol className="col-lg-6 col-md-6 col-sm-12">
+                            <StyledText >
                                 <h1>Text Column Goes Here</h1>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                                     sed do eiusmod tempor incididunt ut
@@ -248,9 +268,9 @@ class LandingPage extends Component<HomeState> {
                                 <Button size="large">
                                     View Rents
                                 </Button>
-                            </div>
-                        </Col>
-                        <Col xs={12}>
+                            </StyledText>
+                        </StyledCol>
+                        <Col className="col-lg-6 col-md-6 col-sm-12">
                             <div>
                                 <img style={{ width: '100%', height: 'auto' }} src={rentCarImage} alt="rentcar" />
                             </div>
@@ -275,13 +295,13 @@ class LandingPage extends Component<HomeState> {
                 </StatsRow>
                 <Container>
                     <Row className="d-flex align-items-center my-5">
-                        <Col xs={12}>
+                        <Col className="col-lg-6 col-md-6 col-sm-12">
                             <div>
                                 <img style={{ width: '100%', height: 'auto' }} src={rentCarImage} alt="rentcar" />
                             </div>
                         </Col>
-                        <Col xs={12}>
-                            <div className="w-75">
+                        <StyledCol className="col-lg-6 col-md-6 col-sm-12">
+                            <StyledText>
                                 <h1>Text Column Goes Here</h1>
                                 <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
                                     sed do eiusmod tempor incididunt ut
@@ -292,8 +312,8 @@ class LandingPage extends Component<HomeState> {
                                 <Button size="large">
                                     View Rents
                                 </Button>
-                            </div>
-                        </Col>
+                            </StyledText>
+                        </StyledCol>
                     </Row>
                 </Container>
             </CustomLayout>

@@ -19,6 +19,9 @@ const StyledInput = styled(Input)`
 
 const FormDiv = styled.div`
     width: 90%;
+    @media (max-width: 768px) {
+    width:100%;
+    }
 `;
 
 const StyledDiv = styled.div`
@@ -26,6 +29,20 @@ const StyledDiv = styled.div`
     justify-content: space-between;
 `;
 
+const StyledSearchBar = styled.div`
+    display: flex;
+    justify-content: space-between;
+    @media (max-width: 768px) {
+    margin-top:1rem;
+    width:100%;
+    }
+    `
+const AdsSection = styled(Row)`
+  @media (max-width: 768px) {
+    display: flex;
+    justify-content: center;
+    }
+`
 interface Filters {
     car_type: string;
     priceFrom: number | undefined;
@@ -300,17 +317,17 @@ const Ads: React.FC = () => {
                         </FormDiv>
                     </Col>
                     <Col xs={24} sm={24} md={18} lg={18} xl={18}>
-                        <div className="d-flex justify-content-between">
+                        <StyledSearchBar>
                             <Input.Search size="large" className="w-50" placeholder="Search by title" onSearch={handleSearch} />
-                            <Select style={{ width: '13%' }} size="large" suffixIcon={<FunnelPlotOutlined style={{ fontSize: '18px', color: "black", cursor: 'default' }} />} value={sortOption} onChange={handleSortChange}>
+                            <Select size="large" suffixIcon={<FunnelPlotOutlined style={{ fontSize: '18px', color: "black", cursor: 'default' }} />} value={sortOption} onChange={handleSortChange}>
                                 <Option value="newest">Newest</Option>
                                 <Option value="oldest">Oldest</Option>
                                 <Option value="priceLowToHigh">Price: Low to High</Option>
                                 <Option value="priceHighToLow">Price: High to Low</Option>
                             </Select>
-                        </div>
+                        </StyledSearchBar>
 
-                        <Row gutter={[16, 16]}>
+                        <AdsSection gutter={[16, 16]}>
                             {ads && ads.length > 0 ? (
                                 ads.map((ad, index) => (
                                     <Col key={index} xs={24} sm={12} md={12} lg={8} xl={8}>
@@ -327,7 +344,7 @@ const Ads: React.FC = () => {
                                 ))) : (
                                 <p>No ads found.</p>
                             )}
-                        </Row>
+                        </AdsSection>
                         <div className="d-flex justify-content-center mt-5" >
                             <Pagination
                                 count={totalPages}

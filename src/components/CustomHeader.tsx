@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Layout, Menu, Button, Badge, Drawer, List, Tooltip, message, Dropdown, MenuProps, Space } from 'antd';
+import { Layout, Menu, Button, Badge, Drawer, List, Tooltip, message, Dropdown, Space } from 'antd';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { useUser } from "../context/User-context";
-import { HeartOutlined, DeleteOutlined, UserOutlined } from '@ant-design/icons';
+import { HeartOutlined, DeleteOutlined, UserOutlined, MenuOutlined } from '@ant-design/icons';
 import axiosInstance from "../api";
 import { Wishlist } from "../types/Wishlist";
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import { Col, Row } from 'react-bootstrap';
 
 const { Header } = Layout;
 
@@ -33,6 +34,7 @@ const Nav = styled.nav`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
 `;
 
 const UserSection = styled.div`
@@ -145,7 +147,6 @@ const WishlistDrawer: React.FC<{ visible: boolean; onClose: () => void }> = ({ v
     );
 };
 
-
 const CustomHeader: React.FC = () => {
     const { user, setUser } = useUser();
     const [isFixed, setIsFixed] = useState(false);
@@ -153,6 +154,7 @@ const CustomHeader: React.FC = () => {
     const [wishlistItems, setWishlistItems] = useState<Wishlist[]>([]);
     const location = useLocation();
     const navigate = useNavigate();
+    const [drawerVisible, setDrawerVisible] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -201,7 +203,8 @@ const CustomHeader: React.FC = () => {
     };
 
     const activeMenuItem = determineActiveMenuItem(location.pathname);
-    const items: MenuProps['items'] = [
+
+    const items = [
         {
             label: <StyledLink to="/profile">My Profile</StyledLink>,
             key: '0',
@@ -215,6 +218,7 @@ const CustomHeader: React.FC = () => {
         }
 
     ];
+
     const menu = (
         <Menu>
             <Menu.Item key="1" onClick={showWishlistDrawer} >
@@ -237,7 +241,7 @@ const CustomHeader: React.FC = () => {
             <Nav>
                 <h1 style={{ width: '15%' }} className="text-black text-start">Oglas</h1>
                 <Menu
-                    className="d-flex justify-content-center"
+                    className="d-flex justify-content-center d-none d-lg-flex"
                     theme="light"
                     mode="horizontal"
                     style={{ minWidth: 0, flex: "auto" }}
@@ -262,28 +266,79 @@ const CustomHeader: React.FC = () => {
                 <UserSection>
                     {user ? (
                         <>
-                            <Dropdown menu={{ items }} trigger={['click']}>
+                            <Dropdown overlay={menu} trigger={['click']}>
                                 <a onClick={(e) => e.preventDefault()}>
                                     <Space>
                                         <span style={{ cursor: 'pointer' }} className="text-dark px-2">{user.username}</span>
                                     </Space>
                                 </a>
                             </Dropdown>
-                            <Button onClick={handleLogout} shape="round" size="large">Logout</Button>
+                            <Button onClick={handleLogout} shape="round" size="large" className="d-none d-lg-inline-block">Logout</Button>
+                            <Button icon={<MenuOutlined />} onClick={() => setDrawerVisible(true)} className="d-lg-none" />
                         </>
                     ) : (
                         <AuthList>
                             <StyledLink to="/authentication" style={{ textDecoration: 'none' }}>
-                                <Button shape="round" size="large">Login</Button>
+                                <Button shape="round" size="large" className="d-none d-lg-inline-block">Login</Button>
                             </StyledLink>
-                            <span className='mx-2'></span>
+                            <span className='mx-2 d-none d-lg-inline-block'></span>
                             <StyledLink to="/authentication" style={{ textDecoration: 'none', color: '#fff' }}>
-                                <Button shape="round" size="large" type="primary">Register</Button>
+                                <Button shape="round" size="large" type="primary" className="d-none d-lg-inline-block">Register</Button>
                             </StyledLink>
+                            <Button icon={<MenuOutlined />} onClick={() => setDrawerVisible(true)} className="d-lg-none" />
                         </AuthList>
                     )}
                 </UserSection>
             </Nav>
+            <Drawer
+                title="Menu"
+                placement="right"
+                closable={true}
+                onClose={() => setDrawerVisible(false)}
+                visible={drawerVisible}
+            >
+                <Menu mode="vertical" selectedKeys={activeMenuItem}>
+                    <Menu.Item key="home">
+                        <StyledLink to="/">Home</StyledLink>
+                    </Menu.Item>
+                    <Menu.Item key="rent">
+                        <StyledLink to="/rent">Rent</StyledLink>
+                    </Menu.Item>
+                    <Menu.Item key="explore">
+                        <StyledLink to="/ads">Explore</StyledLink>
+                    </Menu.Item>
+                    <Menu.Item key="about">
+                        <StyledLink to="/about">About Us</StyledLink>
+                    </Menu.Item>
+                    <Menu.Item key="auction">
+                        <StyledLink to="/auction">Auction</StyledLink>
+                    </Menu.Item>
+                </Menu>
+                <Menu mode="vertical">
+                    {user ? (
+                        <>
+                            <Menu.Item key="profile">
+                                <StyledLink to="/profile">My Profile</StyledLink>
+                            </Menu.Item>
+                            <Menu.Item key="wishlist" onClick={showWishlistDrawer}>
+                                <span>Wishlist</span>
+                            </Menu.Item>
+                            <Menu.Item key="logout" onClick={handleLogout}>
+                                Logout
+                            </Menu.Item>
+                        </>
+                    ) : (
+                        <>
+                            <Menu.Item key="login">
+                                <StyledLink to="/authentication">Login</StyledLink>
+                            </Menu.Item>
+                            <Menu.Item key="register">
+                                <StyledLink to="/authentication">Register</StyledLink>
+                            </Menu.Item>
+                        </>
+                    )}
+                </Menu>
+            </Drawer>
             <WishlistDrawer visible={wishlistVisible} onClose={onCloseWishlistDrawer} />
         </StyledHeader>
     );

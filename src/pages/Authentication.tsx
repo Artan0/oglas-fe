@@ -1,15 +1,16 @@
 import React, { Component, ContextType } from 'react';
 import styled from 'styled-components';
-import { Layout, Input, Button, Form, message, Tabs, Col, DatePicker, Select } from 'antd';
+import { Layout, Input, Button, Form, message, Tabs, Col, Row } from 'antd';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import CustomLayout from '../layouts/layout';
 import axiosInstance from '../api';
 import loginImage from '../assets/images/sign-up.png';
 import { User } from '../types/user';
 import { UserContext, UserContextProps } from '../context/User-context';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 const { Content } = Layout;
 const { TabPane } = Tabs;
-const { Option } = Select;
 
 interface AuthProps {
     navigate: NavigateFunction;
@@ -26,10 +27,12 @@ const StyledContent = styled(Content)`
     line-height: 120px;
     color: #000; 
     background-color: #f0f4f9;
+    padding: 2rem 0;
 `;
 
 const StyledForm = styled(Form)`
-    width: 80%; 
+    width: 100%;
+    max-width: 400px;
     margin: 0 auto;
 `;
 
@@ -39,26 +42,14 @@ const StyledTabs = styled(Tabs)`
     margin: 10px;
     box-shadow: 0 3px 7px rgba(0, 0, 0, 0.1);
     padding: 10px;
-
-    .ant-tabs-nav-wrap {
-        display: flex;
-        justify-content: center;
-    }
 `;
-
-// const prefixSelector = (
-//     <Form.Item name="prefix" noStyle>
-//         <Select style={{ width: 70 }}>
-//             <Option value="389">+389</Option>
-//         </Select>
-//     </Form.Item>
-// );
 
 const StyledDiv = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 15px;
+    flex-wrap: wrap;
 `;
 
 const formItemLayout = {
@@ -72,7 +63,7 @@ const formItemLayout = {
         xs: { span: 24 },
         sm: { span: 14 },
         md: { span: 16 },
-        lg: { span: 18 },
+        lg: { span: 19 },
     },
 };
 
@@ -102,6 +93,7 @@ class Authentication extends Component<AuthProps, AuthState> {
             message.error('Login failed. Please check your credentials.');
         }
     };
+
     handleRegister = async (values: any) => {
         try {
             await axiosInstance.post('/auth/registration/custom/', values);
@@ -116,8 +108,13 @@ class Authentication extends Component<AuthProps, AuthState> {
             <CustomLayout>
                 <StyledContent className="pt-3">
                     <StyledDiv className="mt-5">
-                        <Col span={8}>
-                            <StyledTabs defaultActiveKey="login">
+                        <Col xs={24} md={12}>
+                            <div className="text-center">
+                                <img src={loginImage} alt="login" style={{ width: '100%', maxWidth: '500px', height: 'auto' }} />
+                            </div>
+                        </Col>
+                        <Col xs={24} md={12}>
+                            <StyledTabs centered defaultActiveKey="login">
                                 <TabPane tab="Login" key="login">
                                     <StyledForm
                                         {...formItemLayout}
@@ -130,7 +127,7 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="email"
                                             rules={[{ required: true, message: 'Please input your email!' }]}
                                         >
-                                            <Input />
+                                            <Input placeholder='Enter Your Email' />
                                         </Form.Item>
 
                                         <Form.Item
@@ -138,7 +135,7 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="password"
                                             rules={[{ required: true, message: 'Please input your password!' }]}
                                         >
-                                            <Input.Password />
+                                            <Input.Password placeholder='Enter Your Password' />
                                         </Form.Item>
 
                                         <Form.Item>
@@ -160,7 +157,7 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="first_name"
                                             rules={[{ required: true, message: 'Please input your first name!' }]}
                                         >
-                                            <Input />
+                                            <Input placeholder='Enter Your First Name' />
                                         </Form.Item>
 
                                         <Form.Item
@@ -168,14 +165,14 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="last_name"
                                             rules={[{ required: true, message: 'Please input your last name!' }]}
                                         >
-                                            <Input />
+                                            <Input placeholder='Enter Your Last Name' />
                                         </Form.Item>
                                         <Form.Item
                                             label="Username"
                                             name="username"
                                             rules={[{ required: true, message: 'Please input your username!' }]}
                                         >
-                                            <Input />
+                                            <Input placeholder='Enter Your Username' />
                                         </Form.Item>
 
                                         <Form.Item
@@ -183,7 +180,7 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="email"
                                             rules={[{ required: true, message: 'Please input your email!' }]}
                                         >
-                                            <Input />
+                                            <Input placeholder='Enter Your Email' />
                                         </Form.Item>
 
                                         <Form.Item
@@ -191,26 +188,15 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="password1"
                                             rules={[{ required: true, message: 'Please input your password!' }]}
                                         >
-                                            <Input.Password />
+                                            <Input.Password placeholder='Enter Your Password' />
                                         </Form.Item>
                                         <Form.Item
-                                            label="Confirm Password"
+                                            label="Confirm"
                                             name="password2"
                                             rules={[{ required: true, message: 'Please confirm your password!' }]}
                                         >
-                                            <Input.Password />
+                                            <Input.Password placeholder='Confirm Your Password' />
                                         </Form.Item>
-
-                                        {/* <Form.Item
-                                            name="phone_number"
-                                            label="Phone Number"
-                                            rules={[{ required: true, message: 'Please input your phone number!' }]}
-                                        >
-                                            <Input addonBefore={prefixSelector} style={{ width: '100%' }} />
-                                        </Form.Item> */}
-
-
-
                                         <Form.Item>
                                             <Button type="primary" htmlType="submit">
                                                 Register
@@ -220,11 +206,7 @@ class Authentication extends Component<AuthProps, AuthState> {
                                 </TabPane>
                             </StyledTabs>
                         </Col>
-                        <Col span={12}>
-                            <div>
-                                <img src={loginImage} alt="login" style={{ width: '70%', height: 'auto' }} />
-                            </div>
-                        </Col>
+
                     </StyledDiv>
                 </StyledContent>
             </CustomLayout>

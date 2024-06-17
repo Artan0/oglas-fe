@@ -27,7 +27,7 @@ interface AdCardProps {
 }
 
 const StyledCard = styled(Card)`
-  width: 90%;
+  width: 95%;
   height: 100%;
   margin: 10px;
   padding: 5px;
