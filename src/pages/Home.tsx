@@ -207,7 +207,6 @@ class LandingPage extends Component<HomeState> {
     };
 
 
-
     handleChange = (name: any, value: any) => {
         this.setState({ [name]: value });
     };
@@ -222,7 +221,6 @@ class LandingPage extends Component<HomeState> {
                         <SearchForm className="mt-4" layout="inline" onFinish={this.handleSearch}>
                             <FormItem style={{ margin: 0 }} name="category">
                                 <Select size="large" placeholder="Select Category" style={{ width: 200 }} onChange={(value) => this.handleChange('selectedCategory', value)}>
-                                    <Option value="">All</Option>
                                     {this.state.categories.map((category, index) => (
                                         <Option key={index} value={category}>{category}</Option>
                                     ))}
@@ -230,7 +228,6 @@ class LandingPage extends Component<HomeState> {
                             </FormItem>
                             <FormItem style={{ margin: 0 }} name="location">
                                 <Select size="large" placeholder="Select Location" style={{ width: 200 }} onChange={(value) => this.handleChange('selectedLocation', value)}>
-                                    <Option value="">All</Option>
                                     {this.state.cities.map((city, index) => (
                                         <Option key={index} value={city}>{city}</Option>
                                     ))}

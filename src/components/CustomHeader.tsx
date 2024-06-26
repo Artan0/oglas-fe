@@ -239,7 +239,7 @@ const CustomHeader: React.FC = () => {
     return (
         <StyledHeader isFixed={isFixed}>
             <Nav>
-                <h1 style={{ width: '15%' }} className="text-black text-start">Oglas</h1>
+                <h1 style={{ width: '12.5%' }} className="text-black text-start">Oglas</h1>
                 <Menu
                     className="d-flex justify-content-center d-none d-lg-flex"
                     theme="light"
@@ -295,7 +295,7 @@ const CustomHeader: React.FC = () => {
                 placement="right"
                 closable={true}
                 onClose={() => setDrawerVisible(false)}
-                visible={drawerVisible}
+                open={drawerVisible}
             >
                 <Menu mode="vertical" selectedKeys={activeMenuItem}>
                     <Menu.Item key="home">
