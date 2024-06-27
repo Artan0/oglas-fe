@@ -111,6 +111,7 @@ const WishlistDrawer: React.FC<{ visible: boolean; onClose: () => void }> = ({ v
             onClose={onClose}
             open={visible}
             width={360}
+            style={{ zIndex: 1500 }}  // Ensure the drawer has a high z-index
         >
             <List
                 dataSource={wishlistItems}
@@ -244,7 +245,8 @@ const CustomHeader: React.FC = () => {
                     className="d-flex justify-content-center d-none d-lg-flex"
                     theme="light"
                     mode="horizontal"
-                    style={{ minWidth: 0, flex: "auto" }}
+                    style={{ minWidth: 0, flex: "auto", zIndex: 1 }}
+
                     selectedKeys={activeMenuItem}
                 >
                     <Menu.Item key="home">
@@ -296,6 +298,7 @@ const CustomHeader: React.FC = () => {
                 closable={true}
                 onClose={() => setDrawerVisible(false)}
                 open={drawerVisible}
+                style={{ zIndex: 1000 }}
             >
                 <Menu mode="vertical" selectedKeys={activeMenuItem}>
                     <Menu.Item key="home">

@@ -75,17 +75,30 @@ const AdDetails: React.FC = () => {
     const isOwner = user && adDetails && user.id === adDetails.owner.id;
 
     useEffect(() => {
-        setLoading(true);
-        axiosInstance.get(`/ad/${id}/`)
-            .then(response => {
+        const fetchAdDetails = async () => {
+            setLoading(true);
+            try {
+                const response = await axiosInstance.get(`/ad/${id}/`);
                 setAdDetails(response.data);
-                setLoading(false);
-            })
-            .catch(error => {
+                fetchSimilarAds(response.data.id);
+            } catch (error) {
                 console.error('Error fetching ad details:', error);
+            } finally {
                 setLoading(false);
-            });
+            }
+        };
+
+        fetchAdDetails();
     }, [id]);
+
+    const fetchSimilarAds = async (adId: string) => {
+        try {
+            const response = await axiosInstance.get(`/ads/similar/${adId}/`);
+            setSimilarAds(response.data);
+        } catch (error) {
+            console.error('Error fetching similar ads:', error);
+        }
+    };
 
     if (loading || !adDetails) {
         return <div>Loading...</div>;

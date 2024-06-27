@@ -11,6 +11,7 @@ import coloredMapImage from "../assets/images/colored_map.jpg";
 import carImage from "../assets/images/car.jpg";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
+import { Ad } from "../types/Ad";
 
 const { Option } = Select;
 
@@ -163,21 +164,32 @@ const dummyAds = [
     }
 ];
 
+
 interface HomeState {
     navigate: NavigateFunction;
+    categories: string[];
+    cities: string[];
+    selectedCategory: string;
+    selectedLocation: string;
+    searchTitle: string;
+    featuredAds: Ad[];
 }
 
 class LandingPage extends Component<HomeState> {
-    state = {
+    state: HomeState = {
+        navigate: this.props.navigate,
         categories: [],
         cities: [],
         selectedCategory: "",
         selectedLocation: "",
-        searchTitle: ""
+        searchTitle: "",
+        featuredAds: []
     };
+
 
     componentDidMount() {
         this.fetchChoices();
+        this.fetchFeaturedAds();
     }
 
     fetchChoices = async () => {
@@ -194,6 +206,15 @@ class LandingPage extends Component<HomeState> {
         }
     };
 
+
+    fetchFeaturedAds = async () => {
+        try {
+            const response = await axiosInstance.get("/ads/featured/");
+            this.setState({ featuredAds: response.data });
+        } catch (error) {
+            console.error("Error fetching featured ads:", error);
+        }
+    };
 
     handleSearch = () => {
         const { selectedCategory, selectedLocation, searchTitle } = this.state;
@@ -246,9 +267,17 @@ class LandingPage extends Component<HomeState> {
                 </LandingPageContainer>
                 <Container>
                     <StyledRow className="my-5">
-                        {dummyAds.map((ad, index) => (
+                        {this.state.featuredAds.map((ad, index) => (
                             <Col key={index} xs={24} sm={12} md={8} lg={6}>
-                                <AdCard id={0} {...ad} />
+                                <AdCard
+                                    id={ad.id}
+                                    title={ad.title}
+                                    imageUrls={ad.image_urls || `https://via.placeholder.com/150`}
+                                    description={ad.description}
+                                    price={ad.price}
+                                    isCar={ad.category === "car"}
+                                    car_details={ad.car_details}
+                                />
                             </Col>
                         ))}
                     </StyledRow>
