@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import CustomLayout from "../layouts/layout";
-import { Form, Input, Select, Button, InputNumber, Card, Col, Row, Upload, message, UploadFile, Modal } from "antd";
+import { Form, Input, Select, Button, InputNumber, Card, Col, Row, Upload, message, UploadFile, Modal, Spin } from "antd";
 import { Container } from "react-bootstrap";
 import { DeleteOutlined, UploadOutlined } from '@ant-design/icons';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -10,6 +10,7 @@ import AdCard from "../components/AdCard";
 import { Ad } from "../types/Ad";
 import { useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
+
 const { Option } = Select;
 const { TextArea } = Input;
 
@@ -41,13 +42,13 @@ const EditAd: React.FC = () => {
         car_type: "",
         fuel_type: "",
     });
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchChoices = async () => {
             try {
                 const response = await axiosInstance.get("/api/choices/");
                 const { cities, ad_types, categories, manufacturers, car_types, colors, fuels } = response.data;
-                console.log("Received Data:", response.data);
 
                 setCities(cities.map((city: any[]) => city[0]));
                 setAdTypes(ad_types.map((type: any[]) => type[0]));
@@ -71,45 +72,44 @@ const EditAd: React.FC = () => {
             }
         };
 
-        fetchAdData();
+        const fetchAdData = async () => {
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await axiosInstance.get(`/ad/edit/${id}/`, {
+                    headers: {
+                        'Authorization': `Token ${token}`
+                    }
+                });
+                const adData = response.data;
+
+                form.setFieldsValue({
+                    title: adData.title,
+                    description: adData.description,
+                    price: adData.price,
+                    ad_type: adData.ad_type,
+                    location: adData.location,
+                    address: adData.address,
+                    category: adData.category,
+                    manufacturer: adData.car_details?.manufacturer,
+                    color: adData.car_details?.color,
+                    car_type: adData.car_details?.car_type,
+                    fuel_type: adData.car_details?.fuel_type,
+                    year: adData.car_details?.year,
+                    mileage: adData.car_details?.mileage
+                });
+                setSelectedCategory(adData.category);
+                setFormData(adData);
+                if (adData.imageUrl) {
+                    setPreviewImageUrl(adData.imageUrl);
+                }
+            } catch (error) {
+                console.error("Error fetching ad data:", error);
+            }
+        };
 
         fetchChoices();
+        fetchAdData();
     }, [form, id]);
-    const fetchAdData = async () => {
-        try {
-            const token = localStorage.getItem('authToken');
-            const response = await axiosInstance.get(`ad/edit/${id}/`, {
-                headers: {
-                    'Authorization': `Token ${token}`
-                }
-            });
-            const adData = response.data;
-            form.setFieldsValue({
-                title: adData.title,
-                description: adData.description,
-                price: adData.price,
-                ad_type: adData.ad_type,
-                location: adData.location,
-                address: adData.address,
-                category: adData.category,
-                manufacturer: adData.car_details?.manufacturer,
-                imageUrl: adData.imageUrl,
-                color: adData.car_details?.color,
-                car_type: adData.car_details?.car_type,
-                fuel_type: adData.car_details?.fuel_type,
-                year: adData.car_details?.year,
-                mileage: adData.car_details?.mileage
-            });
-            form.setFieldsValue(adData);
-            setSelectedCategory(adData.category);
-            setFormData(adData);
-            if (adData.imageUrl) {
-                setPreviewImageUrl(adData.imageUrl);
-            }
-        } catch (error) {
-            console.error("Error fetching ad data:", error);
-        }
-    };
 
     const handleFileChange = ({ fileList }: { fileList: UploadFile[] }) => {
         const limitedFileList = fileList.slice(0, 5);
@@ -121,6 +121,7 @@ const EditAd: React.FC = () => {
             setPreviewImageUrl("");
         }
     };
+
     const handleDelete = async () => {
         try {
             const token = localStorage.getItem('authToken');
@@ -170,9 +171,9 @@ const EditAd: React.FC = () => {
     const csrftoken = Cookies.get('csrftoken');
 
     const handleFormSubmit = async () => {
+        setLoading(true);
         try {
             const token = localStorage.getItem('authToken');
-            const csrftoken = Cookies.get('csrftoken');
 
             const response = await axiosInstance.put(`/ad/edit/${id}/`, formData, {
                 headers: {
@@ -190,14 +191,15 @@ const EditAd: React.FC = () => {
         } catch (error) {
             console.error("Error updating ad:", error);
             message.error("Failed to update ad");
+        } finally {
+            setLoading(false);
         }
     };
-
-
 
     const onFinishFailed = (errorInfo: any) => {
         console.log('Failed:', errorInfo);
     };
+
     const showDeleteModal = () => {
         setDeleteModalVisible(true);
     };
@@ -205,6 +207,7 @@ const EditAd: React.FC = () => {
     const handleCancel = () => {
         setDeleteModalVisible(false);
     };
+
     return (
         <CustomLayout>
             <Container className="p-5">
@@ -221,154 +224,156 @@ const EditAd: React.FC = () => {
                     </Modal>
                     <Col xs={24} sm={24} md={16} lg={14} xl={14}>
 
-                        <Card className="">
-                            <Form style={{ maxWidth: '600px' }}
-                                form={form}
-                                layout="vertical"
-                                name="add_ad"
-                                onFinish={handleFormSubmit}
-                                onFinishFailed={onFinishFailed}
-                                onValuesChange={(changedValues, allValues) => setFormData(allValues as Ad)}
-                            >
-                                <Form.Item
-                                    label="Title"
-                                    name="title"
-                                    rules={[{ required: true, message: 'Please input the title!' }]}
+                        <Spin spinning={loading}>
+                            <Card className="">
+                                <Form style={{ maxWidth: '600px' }}
+                                    form={form}
+                                    layout="vertical"
+                                    name="edit_ad"
+                                    onFinish={handleFormSubmit}
+                                    onFinishFailed={onFinishFailed}
+                                    onValuesChange={(changedValues, allValues) => setFormData(allValues as Ad)}
                                 >
-                                    <Input size="large" />
-                                </Form.Item>
-                                <Form.Item
-                                    label="Description"
-                                    name="description"
-                                    rules={[{ required: true, message: 'Please input the description!' }]}
-                                >
-                                    <TextArea rows={4} />
-                                </Form.Item>
-                                <Form.Item
-                                    label="Price"
-                                    name="price"
-                                    rules={[{ required: true, message: 'Please input the price!' }]}
-                                >
-                                    <InputNumber size="large" min={0} max={1000000} />
-                                </Form.Item>
-                                <Form.Item
-                                    label="Ad Type"
-                                    name="ad_type"
-                                    rules={[{ required: true, message: 'Please select the ad type!' }]}
-                                >
-                                    <Select onSelect={handleAdTypeChange} size="large">
-                                        {adTypes.map((type, index) => (
-                                            <Option key={index} value={type}>{type}</Option>
-                                        ))}
-                                    </Select>
-                                </Form.Item>
-                                <Form.Item
-                                    label="Location"
-                                    name="location"
-                                    rules={[{ required: true, message: 'Please select the location!' }]}
-                                >
-                                    <Select onSelect={handleLocationChange} size="large">
-                                        {cities.map((city, index) => (
-                                            <Option key={index} value={city}>{city}</Option>
-                                        ))}
-                                    </Select>
-                                </Form.Item>
-                                <Form.Item
-                                    label="Address"
-                                    name="address"
-                                    rules={[{ required: false }]}
-                                >
-                                    <Input size="large" />
-                                </Form.Item>
-                                <Form.Item
-                                    label="Category"
-                                    name="category"
-                                    rules={[{ required: true, message: 'Please select the category!' }]}
-                                >
-                                    <Select disabled size="large" value={selectedCategory} onSelect={value => setSelectedCategory(value)}>
-                                        {categories.map((category, index) => (
-                                            <Option key={index} value={category}>{category}</Option>
-                                        ))}
-                                    </Select>
-                                </Form.Item>
-                                {selectedCategory === "car" && (
-                                    <>
-                                        <Form.Item
-                                            label="Manufacturer"
-                                            name="manufacturer"
-                                            rules={[{ required: true, message: 'Please select the manufacturer!' }]}
-                                        >
-                                            <Select size="large" onSelect={handleManufacturerChange}>
-                                                {manufacturers.map((manufacturer, index) => (
-                                                    <Option key={index} value={manufacturer}>{manufacturer}</Option>
-                                                ))}
-                                            </Select>
-                                        </Form.Item>
-                                        <Form.Item label="Year" name="year" rules={[{ required: false }]}>
-                                            <Input size="large" />
-                                        </Form.Item>
-                                        <Form.Item label="Mileage" name="mileage" rules={[{ required: false }]}>
-                                            <Input size="large" />
-                                        </Form.Item>
-                                        <Form.Item
-                                            label="Color"
-                                            name="color"
-                                            rules={[{ required: true, message: 'Please enter a color!' }]}
-                                        >
-                                            <Select size="large" onSelect={handleColorChange}>
-                                                {colors.map((color, index) => (
-                                                    <Option key={index} value={color}>{color}</Option>
-                                                ))}
-                                            </Select>
-                                        </Form.Item>
-                                        <Form.Item
-                                            label="Car Type"
-                                            name="car_type"
-                                            rules={[{ required: true, message: 'Please select the car type!' }]}
-                                        >
-                                            <Select size="large" onSelect={handleCarTypeChange}>
-                                                {car_types.map((car_type, index) => (
-                                                    <Option key={index} value={car_type}>{car_type}</Option>
-                                                ))}
-                                            </Select>
-                                        </Form.Item>
-                                        <Form.Item
-                                            label="Fuel Type"
-                                            name="fuel_type"
-                                            rules={[{ required: true, message: 'Please select the fuel type!' }]}
-                                        >
-                                            <Select size="large" onSelect={handleFuelTypeChange}>
-                                                {fuels.map((fuel, index) => (
-                                                    <Option key={index} value={fuel}>{fuel}</Option>
-                                                ))}
-                                            </Select>
-                                        </Form.Item>
-                                    </>
-                                )}
-                                <Form.Item
-                                    label="Images"
-                                    name="images"
-                                >
-                                    <Upload
-                                        disabled={true}
-                                        listType="picture-card"
-                                        fileList={fileList}
-                                        onChange={handleFileChange}
-                                        beforeUpload={() => false}
+                                    <Form.Item
+                                        label="Title"
+                                        name="title"
+                                        rules={[{ required: true, message: 'Please input the title!' }]}
                                     >
-                                        {fileList.length < 5 && <UploadOutlined />}
-                                    </Upload>
-                                </Form.Item>
-                                <Form.Item>
-
-                                    <Button className="m-1" size="large" type="primary" htmlType="submit">Submit</Button>
-                                    <Button className="m-1" size="large" danger type="primary" icon={<DeleteOutlined />} iconPosition="end" onClick={showDeleteModal}>Delete Ad</Button>
-
-                                </Form.Item>
-                            </Form>
-                        </Card>
+                                        <Input size="large" />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="Description"
+                                        name="description"
+                                        rules={[{ required: true, message: 'Please input the description!' }]}
+                                    >
+                                        <TextArea rows={4} />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="Price"
+                                        name="price"
+                                        rules={[{ required: true, message: 'Please input the price!' }]}
+                                    >
+                                        <InputNumber size="large" min={0} max={1000000} />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="Ad Type"
+                                        name="ad_type"
+                                        rules={[{ required: true, message: 'Please select the ad type!' }]}
+                                    >
+                                        <Select onSelect={handleAdTypeChange} size="large">
+                                            {adTypes.map((type, index) => (
+                                                <Option key={index} value={type}>{type}</Option>
+                                            ))}
+                                        </Select>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="Location"
+                                        name="location"
+                                        rules={[{ required: true, message: 'Please select the location!' }]}
+                                    >
+                                        <Select onSelect={handleLocationChange} size="large">
+                                            {cities.map((city, index) => (
+                                                <Option key={index} value={city}>{city}</Option>
+                                            ))}
+                                        </Select>
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="Address"
+                                        name="address"
+                                        rules={[{ required: false }]}
+                                    >
+                                        <Input size="large" />
+                                    </Form.Item>
+                                    <Form.Item
+                                        label="Category"
+                                        name="category"
+                                        rules={[{ required: true, message: 'Please select the category!' }]}
+                                    >
+                                        <Select disabled size="large" value={selectedCategory} onSelect={value => setSelectedCategory(value)}>
+                                            {categories.map((category, index) => (
+                                                <Option key={index} value={category}>{category}</Option>
+                                            ))}
+                                        </Select>
+                                    </Form.Item>
+                                    {selectedCategory === "car" && (
+                                        <>
+                                            <Form.Item
+                                                label="Manufacturer"
+                                                name="manufacturer"
+                                                rules={[{ required: true, message: 'Please select the manufacturer!' }]}
+                                            >
+                                                <Select size="large" onSelect={handleManufacturerChange}>
+                                                    {manufacturers.map((manufacturer, index) => (
+                                                        <Option key={index} value={manufacturer}>{manufacturer}</Option>
+                                                    ))}
+                                                </Select>
+                                            </Form.Item>
+                                            <Form.Item label="Year" name="year" rules={[{ required: false }]}>
+                                                <Input size="large" />
+                                            </Form.Item>
+                                            <Form.Item label="Mileage" name="mileage" rules={[{ required: false }]}>
+                                                <Input size="large" />
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Color"
+                                                name="color"
+                                                rules={[{ required: true, message: 'Please enter a color!' }]}
+                                            >
+                                                <Select size="large" onSelect={handleColorChange}>
+                                                    {colors.map((color, index) => (
+                                                        <Option key={index} value={color}>{color}</Option>
+                                                    ))}
+                                                </Select>
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Car Type"
+                                                name="car_type"
+                                                rules={[{ required: true, message: 'Please select the car type!' }]}
+                                            >
+                                                <Select size="large" onSelect={handleCarTypeChange}>
+                                                    {car_types.map((car_type, index) => (
+                                                        <Option key={index} value={car_type}>{car_type}</Option>
+                                                    ))}
+                                                </Select>
+                                            </Form.Item>
+                                            <Form.Item
+                                                label="Fuel Type"
+                                                name="fuel_type"
+                                                rules={[{ required: true, message: 'Please select the fuel type!' }]}
+                                            >
+                                                <Select size="large" onSelect={handleFuelTypeChange}>
+                                                    {fuels.map((fuel, index) => (
+                                                        <Option key={index} value={fuel}>{fuel}</Option>
+                                                    ))}
+                                                </Select>
+                                            </Form.Item>
+                                        </>
+                                    )}
+                                    <Form.Item
+                                        label="Images"
+                                        name="images"
+                                    >
+                                        <Upload
+                                            listType="picture-card"
+                                            fileList={fileList}
+                                            onChange={handleFileChange}
+                                            beforeUpload={() => false}
+                                        >
+                                            {fileList.length < 5 && <UploadOutlined />}
+                                        </Upload>
+                                    </Form.Item>
+                                    <Form.Item>
+                                        <Button className="m-1" size="large" type="primary" htmlType="submit" loading={loading}>
+                                            Submit
+                                        </Button>
+                                        <Button className="m-1" size="large" danger type="primary" icon={<DeleteOutlined />} onClick={showDeleteModal}>
+                                            Delete Ad
+                                        </Button>
+                                    </Form.Item>
+                                </Form>
+                            </Card>
+                        </Spin>
                     </Col>
-
                 </Row>
             </Container>
         </CustomLayout>

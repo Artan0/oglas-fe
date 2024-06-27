@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../api";
 import CustomLayout from "../layouts/layout";
-import { Row, Col, Input, Select, DatePicker, Button } from "antd";
+import { Row, Col, Input, Select, DatePicker, Button, Spin } from "antd";
 import { Container } from "react-bootstrap";
 import AdCard from "../components/AdCard";
 import styled from "styled-components";
 import moment from "moment";
 import { Ad } from "../types/Ad";
 import { Pagination } from "@mui/material";
-import { FunnelPlotOutlined, SearchOutlined } from "@ant-design/icons";
+import { FunnelPlotOutlined, LoadingOutlined, SearchOutlined } from "@ant-design/icons";
 import debounce from "lodash.debounce";
 import { useNavigate, useLocation } from "react-router-dom";
 const { Option } = Select;
@@ -102,6 +102,7 @@ const Ads: React.FC = () => {
     const [car_types, setCarTypes] = useState<string[]>([]);
     const [colors, setColors] = useState<string[]>([]);
     const [adTypes, setAdTypes] = useState<string[]>([]);
+    const [loading, setLoading] = useState<boolean>(true);
     const dateFormat = "YYYY-MM-DD";
     const navigate = useNavigate();
     const location = useLocation();
@@ -109,6 +110,7 @@ const Ads: React.FC = () => {
     useEffect(() => {
         const fetchChoices = async () => {
             try {
+                setLoading(true);
                 const response = await axiosInstance.get("/api/choices/");
                 const {
                     cities,
@@ -131,6 +133,8 @@ const Ads: React.FC = () => {
                 setAdTypes(ad_types.map((type: any[]) => type[0]));
             } catch (error) {
                 console.error("Error fetching choices:", error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -174,6 +178,8 @@ const Ads: React.FC = () => {
     }, [location.search]);
     const fetchAds = async () => {
         try {
+            setLoading(true);
+
             const params: any = {
                 page: filters.page,
                 adType: filters.adType,
@@ -215,6 +221,8 @@ const Ads: React.FC = () => {
             }));
         } catch (error) {
             console.error("Error fetching ads:", error);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -307,7 +315,6 @@ const Ads: React.FC = () => {
             handleFilterChange("manufacturer", "");
         }
     };
-
 
     return (
         <CustomLayout>
@@ -507,25 +514,32 @@ const Ads: React.FC = () => {
                                 <Option value="priceHighToLow">Price: High to Low</Option>
                             </Select>
                         </StyledSearchBar>
-                        <AdsSection gutter={[16, 16]}>
-                            {ads.length > 0 ? (
-                                ads.map((ad, index) => (
-                                    <Col key={index} xs={24} sm={12} md={12} lg={8} xl={8}>
-                                        <AdCard
-                                            id={ad.id}
-                                            title={ad.title}
-                                            imageUrls={ad.image_urls || `https://via.placeholder.com/150`}
-                                            description={ad.description}
-                                            price={ad.price}
-                                            isCar={ad.category === "car"}
-                                            car_details={ad.car_details}
-                                        />
-                                    </Col>
-                                ))
-                            ) : (
-                                <p>No ads found.</p>
-                            )}
-                        </AdsSection>
+                        {loading ? (
+                            <div className="text-center">
+                                <Spin className="mt-5" indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+                            </div>
+                        ) : (
+                            <AdsSection gutter={[16, 16]}>
+                                {ads.length > 0 ? (
+                                    ads.map((ad, index) => (
+                                        <Col key={index} xs={24} sm={12} md={12} lg={8} xl={8}>
+                                            <AdCard
+                                                id={ad.id}
+                                                title={ad.title}
+                                                imageUrls={ad.image_urls || `https://via.placeholder.com/150`}
+                                                description={ad.description}
+                                                price={ad.price}
+                                                isCar={ad.category === "car"}
+                                                car_details={ad.car_details}
+                                            />
+                                        </Col>
+                                    ))
+                                ) : (
+                                    <></>
+                                )}
+                            </AdsSection>
+                        )}
+
                         <div className="d-flex justify-content-center mt-5">
                             <Pagination
                                 count={filters.totalPages}

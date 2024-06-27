@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import CustomLayout from "../layouts/layout";
-import { Row, Col, Carousel, Typography, Button } from "antd";
+import { Row, Col, Carousel, Button, Spin } from "antd";
 import { Container } from "react-bootstrap";
 import AdCard from "../components/AdCard";
 import styled from "styled-components";
@@ -10,6 +10,7 @@ import { useParams } from "react-router-dom";
 import type { AdDetails as AdDetailsType } from "../types/Ad-detail";
 import { useUser } from "../context/User-context";
 import { PersonOutline, MailOutline, PhoneOutlined, LocationOnOutlined, AttachMoneyOutlined, HomeOutlined, CategoryOutlined } from "@mui/icons-material";
+import { LoadingOutlined } from "@ant-design/icons";
 
 const StyledCarousel = styled(Carousel)`
     margin-bottom: 1rem;
@@ -100,13 +101,17 @@ const AdDetails: React.FC = () => {
         }
     };
 
-    if (loading || !adDetails) {
-        return <div>Loading...</div>;
-    }
-
     const handleEditClick = () => {
         window.location.href = `/edit/${id}`;
     };
+
+    if (loading || !adDetails) {
+        return (
+            <Container className="py-5 text-center">
+                <Spin className="mt-5" indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+            </Container>
+        );
+    }
 
     return (
         <CustomLayout>

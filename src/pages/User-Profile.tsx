@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import CustomLayout from "../layouts/layout";
-import { Row, Col, Card, Avatar, Button, Typography, Modal, Form, Input } from "antd"; // Import Pagination
+import { Row, Col, Card, Avatar, Button, Typography, Modal, Form, Input, Spin } from "antd";
 import { Container } from "react-bootstrap";
 import styled from "styled-components";
 import AdCard from "../components/AdCard";
@@ -11,7 +11,7 @@ import { Ad } from "../types/Ad";
 import Pagination from "@mui/material/Pagination";
 import { PersonOutline, PhoneOutlined } from "@mui/icons-material";
 import BadgeIcon from '@mui/icons-material/Badge';
-import { EditOutlined, PlusCircleOutlined } from "@ant-design/icons";
+import { EditOutlined, LoadingOutlined, PlusCircleOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography;
 
@@ -28,29 +28,35 @@ const UserProfile: React.FC = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
     const [userAds, setUserAds] = useState<Ad[]>([]);
-    const [currentPage, setCurrentPage] = useState<number>(1); // Track current page
-    const [totalPages, setTotalPages] = useState<number>(1); // Track total pages
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [totalPages, setTotalPages] = useState<number>(1);
+    const [loading, setLoading] = useState<boolean>(true);
+
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserAds = async () => {
             try {
+                setLoading(true);
+
                 const token = localStorage.getItem('authToken');
                 const response = await axiosInstance.get(`/user-ads/?page=${currentPage}`, {
                     headers: {
                         'Authorization': `Token ${token}`
                     }
-                }); // Fetch ads for current page
-                setUserAds(response.data.results); // Update ads
-                setTotalPages(response.data.total_pages); // Update total pages
-                console.log("Total Pages:", response.data.total_pages); // Log total pages
+                });
+                setUserAds(response.data.results);
+                setTotalPages(response.data.total_pages);
+                console.log("Total Pages:", response.data.total_pages);
             } catch (error) {
                 console.error('Error fetching user ads:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
         fetchUserAds();
-    }, [currentPage]); // Fetch ads when currentPage changes
+    }, [currentPage]);
 
     const showModal = () => {
         if (user) {
@@ -119,21 +125,28 @@ const UserProfile: React.FC = () => {
                                 <Title level={3}>My Ads</Title>
                                 <Button size="large" type="primary" icon={<PlusCircleOutlined style={{ fontSize: '18px' }} />} iconPosition={"end"} onClick={() => navigate('/add-ad')}>Add Ad</Button>
                             </div>
-                            <Row gutter={[16, 16]}>
-                                {userAds.map((ad, index) => (
-                                    <Col key={index} xs={24} sm={12} md={12} lg={8} xl={8}>
-                                        <AdCard
-                                            id={ad.id}
-                                            title={ad.title}
-                                            imageUrls={ad.image_urls}
-                                            description={ad.description}
-                                            price={ad.price}
-                                            isCar={ad.category === "car"}
-                                            car_details={ad.car_details}
-                                        />
-                                    </Col>
-                                ))}
-                            </Row>
+                            {loading ? (
+                                <div className="text-center">
+                                    <Spin className="mt-5" indicator={<LoadingOutlined style={{ fontSize: 48 }} spin />} />
+                                </div>
+                            ) : (
+                                <Row gutter={[16, 16]}>
+                                    {userAds.map((ad, index) => (
+                                        <Col key={index} xs={24} sm={12} md={12} lg={8} xl={8}>
+                                            <AdCard
+                                                id={ad.id}
+                                                title={ad.title}
+                                                imageUrls={ad.image_urls}
+                                                description={ad.description}
+                                                price={ad.price}
+                                                isCar={ad.category === "car"}
+                                                car_details={ad.car_details}
+                                            />
+                                        </Col>
+                                    ))}
+                                </Row>
+                            )}
+
                             <div className="d-flex justify-content-center mt-5" >
                                 <Pagination
                                     count={totalPages}

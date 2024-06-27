@@ -39,6 +39,7 @@ const AddAd: React.FC = () => {
         car_type: "",
         fuel_type: "",
     });
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         const fetchChoices = async () => {
@@ -115,6 +116,7 @@ const AddAd: React.FC = () => {
 
     const handleFormSubmit = async () => {
         try {
+            setLoading(true);
             const image_urls = await Promise.all(
                 fileList.map(async (file) => {
                     const uniqueFilename = `${file.name}_${new Date().getTime()}_${Math.floor(Math.random() * 10000)}`;
@@ -138,9 +140,11 @@ const AddAd: React.FC = () => {
             });
 
             console.log("Form Data:", formDataWithImages);
+            setLoading(false);
             window.location.href = "/profile";
             message.success("Ad submitted successfully!");
         } catch (error) {
+            setLoading(false);
             console.error("Error submitting ad:", error);
             message.error("Failed to submit ad");
         }
@@ -294,7 +298,9 @@ const AddAd: React.FC = () => {
                                     </Upload>
                                 </Form.Item>
                                 <Form.Item>
-                                    <Button size="large" type="primary" htmlType="submit">Submit</Button>
+                                    <Button size="large" type="primary" htmlType="submit" loading={loading}>
+                                        Submit
+                                    </Button>
                                 </Form.Item>
                             </Form>
                         </Card>
