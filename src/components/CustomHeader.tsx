@@ -261,8 +261,8 @@ const CustomHeader: React.FC = () => {
                     <Menu.Item key="about">
                         <StyledLink to="/about">About Us</StyledLink>
                     </Menu.Item>
-                    <Menu.Item key="auction">
-                        <StyledLink to="/auction">Auction</StyledLink>
+                    <Menu.Item key="soon">
+                        <StyledLink to="/">Soon</StyledLink>
                     </Menu.Item>
                 </Menu>
                 <UserSection>
@@ -313,8 +313,8 @@ const CustomHeader: React.FC = () => {
                     <Menu.Item key="about">
                         <StyledLink to="/about">About Us</StyledLink>
                     </Menu.Item>
-                    <Menu.Item key="auction">
-                        <StyledLink to="/auction">Auction</StyledLink>
+                    <Menu.Item key="soon">
+                        <StyledLink to="/">Soon</StyledLink>
                     </Menu.Item>
                 </Menu>
                 <Menu mode="vertical">

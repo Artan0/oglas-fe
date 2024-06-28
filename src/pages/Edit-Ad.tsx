@@ -43,7 +43,7 @@ const EditAd: React.FC = () => {
         fuel_type: "",
     });
     const [loading, setLoading] = useState(false);
-
+    const [deleteLoadion, setDeleteLoading] = useState(false);
     useEffect(() => {
         const fetchChoices = async () => {
             try {
@@ -124,6 +124,7 @@ const EditAd: React.FC = () => {
 
     const handleDelete = async () => {
         try {
+            setDeleteLoading(true)
             const token = localStorage.getItem('authToken');
             await axiosInstance.delete(`/ad/delete/${id}/`, {
                 headers: {
@@ -135,6 +136,8 @@ const EditAd: React.FC = () => {
         } catch (error) {
             console.error("Error deleting ad:", error);
             message.error("Failed to delete ad");
+        } finally {
+            setDeleteLoading(false)
         }
     };
 
@@ -210,7 +213,7 @@ const EditAd: React.FC = () => {
 
     return (
         <CustomLayout>
-            <Container className="p-5">
+            <Container className="py-5">
                 <Row className="mt-5" justify="center">
                     <Modal
                         title="Delete Ad"
@@ -354,6 +357,7 @@ const EditAd: React.FC = () => {
                                         name="images"
                                     >
                                         <Upload
+                                            disabled
                                             listType="picture-card"
                                             fileList={fileList}
                                             onChange={handleFileChange}
@@ -366,7 +370,7 @@ const EditAd: React.FC = () => {
                                         <Button className="m-1" size="large" type="primary" htmlType="submit" loading={loading}>
                                             Submit
                                         </Button>
-                                        <Button className="m-1" size="large" danger type="primary" icon={<DeleteOutlined />} onClick={showDeleteModal}>
+                                        <Button className="m-1" size="large" danger type="primary" icon={<DeleteOutlined />} onClick={showDeleteModal} loading={deleteLoadion}>
                                             Delete Ad
                                         </Button>
                                     </Form.Item>

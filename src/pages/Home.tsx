@@ -26,7 +26,6 @@ const LandingPageContainer = styled.div`
 
 const StyledRow = styled(Row)`
   display: flex;
-  justify-content: space-between;
 `;
 
 const StatsRow = styled.div`

@@ -35,6 +35,11 @@ const UserProfile: React.FC = () => {
     const navigate = useNavigate();
 
     useEffect(() => {
+        // if (!user) {
+        //     navigate('/authentication');
+        //     return;
+        // }
+
         const fetchUserAds = async () => {
             try {
                 setLoading(true);
@@ -56,7 +61,7 @@ const UserProfile: React.FC = () => {
         };
 
         fetchUserAds();
-    }, [currentPage]);
+    }, [currentPage, user, navigate]);
 
     const showModal = () => {
         if (user) {
@@ -96,7 +101,7 @@ const UserProfile: React.FC = () => {
     };
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
-        setCurrentPage(page); // Update current page
+        setCurrentPage(page);
     };
 
     return (
@@ -156,7 +161,6 @@ const UserProfile: React.FC = () => {
                                     shape="rounded"
                                     color="primary"
                                 />
-
                             </div>
                         </MyAdsSection>
                     </Col>

@@ -47,6 +47,24 @@ const StyledCarousel = styled(Carousel)`
             }
         }
     }
+
+    @media (max-width: 768px) {
+        padding-right: 0;
+
+        .slick-slide {
+            img {
+                height: 300px;
+            }
+        }
+    }
+
+    @media (max-width: 480px) {
+        .slick-slide {
+            img {
+                height: 200px;
+            }
+        }
+    }
 `;
 
 const StyledAdInfo = styled.div`
@@ -126,7 +144,7 @@ const AdDetails: React.FC = () => {
                             ))}
                         </StyledCarousel>
                         <h3>Description</h3>
-                        <p>{adDetails.description}</p>
+                        <div dangerouslySetInnerHTML={{ __html: adDetails.description }} />
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <StyledOwnerInfo>
@@ -154,19 +172,29 @@ const AdDetails: React.FC = () => {
                         <StyledAdInfo>
                             <div className="d-flex justify-content-between">
                                 <h4>Ad Details</h4>
-
                                 {isOwner && (
                                     <Button type="primary" onClick={handleEditClick}>
                                         Edit Ad
                                     </Button>
                                 )}
                             </div>
-                            <p><strong>Title:</strong> {adDetails.title}</p>
-                            <p><strong>Ad Type:</strong> {adDetails.ad_type}</p>
-                            <p><strong><LocationOnOutlined /> Location:</strong> {adDetails.location}</p>
-                            <p><strong><AttachMoneyOutlined /> Price:</strong> {adDetails.price}</p>
-                            <p><strong><HomeOutlined /> Address:</strong> {adDetails.address}</p>
-                            <p><strong><CategoryOutlined /> Category:</strong> {adDetails.category}</p>
+                            <p><strong>Title:</strong> {adDetails?.title}</p>
+                            <p><strong>Ad Type:</strong> {adDetails?.ad_type}</p>
+                            <p><strong><LocationOnOutlined /> Location:</strong> {adDetails?.location}</p>
+                            <p><strong><AttachMoneyOutlined /> Price:</strong> {adDetails?.price}</p>
+                            <p><strong><HomeOutlined /> Address:</strong> {adDetails?.address}</p>
+                            <p><strong><CategoryOutlined /> Category:</strong> {adDetails?.category}</p>
+                            {adDetails?.car_details && (
+                                <>
+                                    <h4>Car Details</h4>
+                                    <p><strong>Manufacturer:</strong> {adDetails?.car_details?.manufacturer}</p>
+                                    <p><strong>Car Type:</strong> {adDetails?.car_details?.car_type}</p>
+                                    <p><strong>Color:</strong> {adDetails?.car_details?.color}</p>
+                                    <p><strong>Fuel Type:</strong> {adDetails?.car_details?.fuel_type}</p>
+                                    <p><strong>Mileage:</strong> {adDetails?.car_details?.mileage}</p>
+
+                                </>
+                            )}
                         </StyledAdInfo>
                     </Col>
                 </Row>

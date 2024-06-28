@@ -52,6 +52,7 @@ const StyledDiv = styled.div`
     flex-wrap: wrap;
 `;
 
+
 const formItemLayout = {
     labelCol: {
         xs: { span: 24 },
@@ -127,7 +128,7 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="email"
                                             rules={[{ required: true, message: 'Please input your email!' }]}
                                         >
-                                            <Input placeholder='Enter Your Email' />
+                                            <Input size='large' placeholder='Enter Your Email' />
                                         </Form.Item>
 
                                         <Form.Item
@@ -135,11 +136,11 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="password"
                                             rules={[{ required: true, message: 'Please input your password!' }]}
                                         >
-                                            <Input.Password placeholder='Enter Your Password' />
+                                            <Input.Password size='large' placeholder='Enter Your Password' />
                                         </Form.Item>
 
                                         <Form.Item>
-                                            <Button type="primary" htmlType="submit">
+                                            <Button size='large' type="primary" htmlType="submit">
                                                 Log in
                                             </Button>
                                         </Form.Item>
@@ -157,7 +158,7 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="first_name"
                                             rules={[{ required: true, message: 'Please input your first name!' }]}
                                         >
-                                            <Input placeholder='Enter Your First Name' />
+                                            <Input size='large' placeholder='Enter Your First Name' />
                                         </Form.Item>
 
                                         <Form.Item
@@ -165,14 +166,14 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="last_name"
                                             rules={[{ required: true, message: 'Please input your last name!' }]}
                                         >
-                                            <Input placeholder='Enter Your Last Name' />
+                                            <Input size='large' placeholder='Enter Your Last Name' />
                                         </Form.Item>
                                         <Form.Item
                                             label="Username"
                                             name="username"
                                             rules={[{ required: true, message: 'Please input your username!' }]}
                                         >
-                                            <Input placeholder='Enter Your Username' />
+                                            <Input size='large' placeholder='Enter Your Username' />
                                         </Form.Item>
 
                                         <Form.Item
@@ -180,7 +181,7 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="email"
                                             rules={[{ required: true, message: 'Please input your email!' }]}
                                         >
-                                            <Input placeholder='Enter Your Email' />
+                                            <Input size='large' placeholder='Enter Your Email' />
                                         </Form.Item>
 
                                         <Form.Item
@@ -188,17 +189,17 @@ class Authentication extends Component<AuthProps, AuthState> {
                                             name="password1"
                                             rules={[{ required: true, message: 'Please input your password!' }]}
                                         >
-                                            <Input.Password placeholder='Enter Your Password' />
+                                            <Input.Password size='large' placeholder='Enter Your Password' />
                                         </Form.Item>
                                         <Form.Item
                                             label="Confirm"
                                             name="password2"
                                             rules={[{ required: true, message: 'Please confirm your password!' }]}
                                         >
-                                            <Input.Password placeholder='Confirm Your Password' />
+                                            <Input.Password size='large' placeholder='Confirm Your Password' />
                                         </Form.Item>
                                         <Form.Item>
-                                            <Button type="primary" htmlType="submit">
+                                            <Button size='large' type="primary" htmlType="submit">
                                                 Register
                                             </Button>
                                         </Form.Item>

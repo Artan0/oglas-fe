@@ -1,7 +1,15 @@
 import { User } from "./user";
 
-export interface AdDetails{
-    id: number
+export interface CarDetails {
+    manufacturer: string;
+    car_type: string;
+    color: string;
+    fuel_type: string;
+    mileage: number;
+}
+
+export interface AdDetails {
+    id: number;
     title: string;
     description: string;
     price: number;
@@ -9,10 +17,7 @@ export interface AdDetails{
     location: string;
     address: string;
     category: string;
-    manufacturer?: string;
     image_urls: string[];
-    color: string;
-    car_type: string;
-    fuel_type: string;
-    owner: User
+    owner: User;
+    car_details?: CarDetails;
 }

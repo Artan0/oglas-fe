@@ -43,7 +43,7 @@ class AboutUs extends Component {
                                 auctor, in elementum libero convallis.
                             </p>
                         </Col>
-                        <Col xs={24} md={12}>
+                        <Col className="d-flex justify-content-center" xs={24} md={12}>
                             <img
                                 src={peopleImage}
                                 alt="About Us"

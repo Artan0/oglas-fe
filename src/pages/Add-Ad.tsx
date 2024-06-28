@@ -156,10 +156,10 @@ const AddAd: React.FC = () => {
 
     return (
         <CustomLayout>
-            <Container className="p-5">
+            <Container className="py-5">
                 <Row className="mt-5" justify="center">
                     <Col xs={24} sm={24} md={16} lg={14} xl={14}>
-                        <Card className="w-75">
+                        <Card className="">
                             <Form style={{ maxWidth: '600px' }}
                                 form={form}
                                 layout="vertical"
