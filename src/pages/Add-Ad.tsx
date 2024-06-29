@@ -8,6 +8,9 @@ import { imgDB } from "../setup/firebase";
 import axiosInstance from "../api";
 import AdCard from "../components/AdCard";
 import { Ad } from "../types/Ad";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import PreviewCard from "../components/PreviewCard";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -180,7 +183,7 @@ const AddAd: React.FC = () => {
                                     name="description"
                                     rules={[{ required: true, message: 'Please input the description!' }]}
                                 >
-                                    <TextArea rows={4} />
+                                    <ReactQuill theme="snow" />
                                 </Form.Item>
                                 <Form.Item
                                     label="Price"
@@ -307,7 +310,7 @@ const AddAd: React.FC = () => {
                     </Col>
                     <Col xs={24} sm={24} md={8} lg={7} xl={7}>
                         <div>
-                            <AdCard {...formData} imageUrls={[previewImageUrl]} />
+                            <PreviewCard {...formData} imageUrls={[previewImageUrl]} />
                         </div>
                     </Col>
                 </Row>

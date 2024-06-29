@@ -10,6 +10,7 @@ import AdCard from "../components/AdCard";
 import { Ad } from "../types/Ad";
 import { useParams } from "react-router-dom";
 import Cookies from 'js-cookie';
+import ReactQuill from "react-quill";
 
 const { Option } = Select;
 const { TextArea } = Input;
@@ -249,7 +250,8 @@ const EditAd: React.FC = () => {
                                         name="description"
                                         rules={[{ required: true, message: 'Please input the description!' }]}
                                     >
-                                        <TextArea rows={4} />
+                                        <ReactQuill theme="snow" />
+
                                     </Form.Item>
                                     <Form.Item
                                         label="Price"

@@ -50,8 +50,8 @@ const StyledLink = styled(Link)`
 const StyledTool = styled(Tooltip)`
   position: absolute;
   bottom: 12px;
-  right:27px;
-`
+  right: 27px;
+`;
 
 const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrls, description, price, isCar, car_details }) => {
   const handleAddToWishlist = async () => {
@@ -74,13 +74,24 @@ const AdCard: React.FC<AdCardProps> = ({ id, title, imageUrls, description, pric
     }
   };
 
+  const stripHtmlTags = (html: string) => {
+    const doc = new DOMParser().parseFromString(html, 'text/html');
+    return doc.body.textContent || "";
+  };
+
+  const truncateDescription = (text: string, length: number) => {
+    const plainText = stripHtmlTags(text);
+    if (plainText.length <= length) return plainText;
+    return plainText.substring(0, length) + "...";
+  };
+
   return (
     <StyledCard
       hoverable
       cover={<img style={{ borderRadius: 2 }} alt="ad" src={imageUrls[0]} />}
     >
       <StyledLink to={`/ad/${id}`}>
-        <Meta title={title} description={description?.length > 61 ? `${description.substring(0, 61)}...` : description} />
+        <Meta title={title} description={truncateDescription(description, 61)} />
         <Price>${price}</Price>
       </StyledLink>
       <StyledTool title="Add to Wishlist">
