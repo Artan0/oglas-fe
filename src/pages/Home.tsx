@@ -267,7 +267,7 @@ class LandingPage extends Component<HomeState> {
                 <Container>
                     <StyledRow className="my-5">
                         {this.state.featuredAds.map((ad, index) => (
-                            <Col key={index} xs={24} sm={12} md={8} lg={6}>
+                            <Col className="mt-2" key={index} xs={24} sm={12} md={8} lg={6}>
                                 <AdCard
                                     id={ad.id}
                                     title={ad.title}

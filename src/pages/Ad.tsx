@@ -85,6 +85,22 @@ const StyledUserInfo = styled.h6`
     margin: 0;
 `;
 
+const StyledDescription = styled.div`
+    margin-top: 1rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    word-wrap: break-word; 
+    word-break: break-all; 
+
+    @media (max-width: 768px) {
+        font-size: 0.875rem;
+    }
+
+    @media (max-width: 480px) {
+        font-size: 0.75rem;
+    }
+`;
+
 const AdDetails: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [adDetails, setAdDetails] = useState<AdDetailsType>();
@@ -144,7 +160,7 @@ const AdDetails: React.FC = () => {
                             ))}
                         </StyledCarousel>
                         <h3>Description</h3>
-                        <div dangerouslySetInnerHTML={{ __html: adDetails.description }} />
+                        <StyledDescription dangerouslySetInnerHTML={{ __html: adDetails.description }} />
                     </Col>
                     <Col xs={24} sm={24} md={12} lg={12} xl={12}>
                         <StyledOwnerInfo>

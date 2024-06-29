@@ -10,7 +10,6 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import { Col, Row } from 'react-bootstrap';
 
 const { Header } = Layout;
-
 const StyledHeader = styled(Header) <{ isFixed: boolean }>`
     text-align: center;
     color: #fff;
@@ -18,11 +17,14 @@ const StyledHeader = styled(Header) <{ isFixed: boolean }>`
     width: 100%;
     box-shadow: 2px 0px 5px 2px lightgray;
     background-color: white;
-    z-index: 10; 
+    z-index: 1000; 
     position: ${(props) => (props.isFixed ? 'fixed' : 'absolute')};
     top: ${(props) => (props.isFixed ? '0' : 'auto')};
     transition: top 0.4s ease-out, opacity 0.4s ease-out, background-color 0.4s ease-out;
     opacity: ${(props) => (props.isFixed ? 1 : 1)};
+    height: 64px;
+    display: flex;
+    align-items: center;
 `;
 
 const Logo = styled.img`
@@ -35,17 +37,21 @@ const Nav = styled.nav`
     justify-content: space-between;
     align-items: center;
     width: 100%;
+    height: 100%;
 `;
 
 const UserSection = styled.div`
     display: flex;
     align-items: center;
+    height: 100%;
 `;
 
 const AuthList = styled.div`
     display: flex;
+    align-items: center; 
     padding: 0;
     margin: 0;
+    height: 100%; 
 `;
 
 const StyledLink = styled(Link)`
@@ -111,7 +117,7 @@ const WishlistDrawer: React.FC<{ visible: boolean; onClose: () => void }> = ({ v
             onClose={onClose}
             open={visible}
             width={360}
-            style={{ zIndex: 1500 }}  // Ensure the drawer has a high z-index
+            style={{ zIndex: 1500 }}
         >
             <List
                 dataSource={wishlistItems}
@@ -217,7 +223,6 @@ const CustomHeader: React.FC = () => {
             icon: <FavoriteBorderIcon style={{ fontSize: '20px', cursor: 'pointer', marginRight: '8px' }} />,
             onClick: showWishlistDrawer
         }
-
     ];
 
     const menu = (
@@ -240,7 +245,7 @@ const CustomHeader: React.FC = () => {
     return (
         <StyledHeader isFixed={isFixed}>
             <Nav>
-                <h1 style={{ width: '12.5%' }} className="text-black text-start">Oglas</h1>
+                <h1 style={{ width: '12.5%', margin: '0' }} className="text-black text-start">Oglas</h1>
                 <Menu
                     className="d-flex justify-content-center d-none d-lg-flex"
                     theme="light"
@@ -275,19 +280,52 @@ const CustomHeader: React.FC = () => {
                                     </Space>
                                 </a>
                             </Dropdown>
-                            <Button onClick={handleLogout} shape="round" size="large" className="d-none d-lg-inline-block">Logout</Button>
-                            <Button icon={<MenuOutlined />} onClick={() => setDrawerVisible(true)} className="d-lg-none" />
+                            <Button
+                                onClick={handleLogout}
+                                shape="round"
+                                size="large"
+                                className="d-none d-lg-inline-block"
+                                style={{ margin: 'auto 0' }}
+                            >
+                                Logout
+                            </Button>
+                            <Button
+                                icon={<MenuOutlined />}
+                                onClick={() => setDrawerVisible(true)}
+                                className="d-lg-none"
+                                style={{ margin: 'auto 0' }}
+                            />
                         </>
                     ) : (
                         <AuthList>
                             <StyledLink to="/authentication" style={{ textDecoration: 'none' }}>
-                                <Button shape="round" size="large" className="d-none d-lg-inline-block">Login</Button>
+                                <Button
+                                    shape="round"
+                                    size="large"
+                                    className="d-none d-lg-inline-block"
+                                    style={{ margin: 'auto 0' }}
+                                >
+                                    Login
+                                </Button>
                             </StyledLink>
                             <span className='mx-2 d-none d-lg-inline-block'></span>
                             <StyledLink to="/authentication" style={{ textDecoration: 'none', color: '#fff' }}>
-                                <Button shape="round" size="large" type="primary" className="d-none d-lg-inline-block">Register</Button>
+                                <Button
+                                    shape="round"
+                                    size="large"
+                                    type="primary"
+                                    className="d-none d-lg-inline-block"
+                                    style={{ margin: 'auto 0' }}
+                                >
+                                    Register
+                                </Button>
                             </StyledLink>
-                            <Button icon={<MenuOutlined />} onClick={() => setDrawerVisible(true)} className="d-lg-none" />
+                            <Button
+                                icon={<MenuOutlined />}
+                                onClick={() => setDrawerVisible(true)}
+                                className="d-lg-none"
+                                style={{ margin: 'auto 0' }}
+                            />
                         </AuthList>
                     )}
                 </UserSection>
@@ -298,7 +336,7 @@ const CustomHeader: React.FC = () => {
                 closable={true}
                 onClose={() => setDrawerVisible(false)}
                 open={drawerVisible}
-                style={{ zIndex: 1000 }}
+                style={{ zIndex: 1200 }}
             >
                 <Menu mode="vertical" selectedKeys={activeMenuItem}>
                     <Menu.Item key="home">
@@ -312,9 +350,6 @@ const CustomHeader: React.FC = () => {
                     </Menu.Item>
                     <Menu.Item key="about">
                         <StyledLink to="/about">About Us</StyledLink>
-                    </Menu.Item>
-                    <Menu.Item key="soon">
-                        <StyledLink to="/">Soon</StyledLink>
                     </Menu.Item>
                 </Menu>
                 <Menu mode="vertical">
