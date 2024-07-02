@@ -336,7 +336,7 @@ const CustomHeader: React.FC = () => {
                 closable={true}
                 onClose={() => setDrawerVisible(false)}
                 open={drawerVisible}
-                style={{ zIndex: 1200 }}
+                style={{ zIndex: 12000 }}
             >
                 <Menu mode="vertical" selectedKeys={activeMenuItem}>
                     <Menu.Item key="home">

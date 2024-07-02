@@ -110,7 +110,8 @@ const SearchButton = styled(Button)`
 
 const Slogan = styled.h1`
   font-size: 40px;
-  color: #333;
+  color: #fff;
+  text-shadow: 0 0 8px #2d2b2b;
   box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.2);
   padding: 5px;
   @media (max-width: 482px){
@@ -163,7 +164,6 @@ const dummyAds = [
     }
 ];
 
-
 interface HomeState {
     navigate: NavigateFunction;
     categories: string[];
@@ -185,7 +185,6 @@ class LandingPage extends Component<HomeState> {
         featuredAds: []
     };
 
-
     componentDidMount() {
         this.fetchChoices();
         this.fetchFeaturedAds();
@@ -204,7 +203,6 @@ class LandingPage extends Component<HomeState> {
             console.error("Error fetching choices:", error);
         }
     };
-
 
     fetchFeaturedAds = async () => {
         try {
@@ -226,18 +224,16 @@ class LandingPage extends Component<HomeState> {
         this.props.navigate(`/ads?${queryParams.toString()}`);
     };
 
-
     handleChange = (name: any, value: any) => {
         this.setState({ [name]: value });
     };
-
 
     render() {
         return (
             <CustomLayout>
                 <LandingPageContainer className="pt-3">
                     <ImageContainer className="mt-5">
-                        <Slogan>Your Slogan Goes Here</Slogan>
+                        <Slogan>Discover Your Perfect Ride</Slogan>
                         <SearchForm className="mt-4" layout="inline" onFinish={this.handleSearch}>
                             <FormItem style={{ margin: 0 }} name="category">
                                 <Select size="large" placeholder="Select Category" style={{ width: 200 }} onChange={(value) => this.handleChange('selectedCategory', value)}>
@@ -280,41 +276,38 @@ class LandingPage extends Component<HomeState> {
                             </Col>
                         ))}
                     </StyledRow>
-                    <Row className="d-flex align-items-center my-5">
-                        <StyledCol className="col-lg-6 col-md-6 col-sm-12">
-                            <StyledText >
-                                <h1>Text Column Goes Here</h1>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                    sed do eiusmod tempor incididunt ut
-                                    labore et dolore magna aliqua
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
-                                </p>
-                                <Button size="large">
-                                    View Rents
-                                </Button>
-                            </StyledText>
-                        </StyledCol>
-                        <Col className="col-lg-6 col-md-6 col-sm-12">
-                            <div>
-                                <img style={{ width: '100%', height: 'auto' }} src={rentCarImage} alt="rentcar" />
-                            </div>
-                        </Col>
-                    </Row>
                 </Container>
+                <Row className="d-flex align-items-center my-5">
+                    <StyledCol className="col-lg-6 col-md-6 col-sm-12">
+                        <StyledText>
+                            <h1>Safe and Secure Rentals</h1>
+                            <p>
+                                Your safety is our top priority. We offer a wide range of rental options, ensuring that each vehicle meets the highest standards of safety and reliability. Our user-friendly platform makes it easy to find and rent a car that suits your needs, all while providing exceptional customer service. Drive with confidence knowing that we care about your safety and satisfaction.
+                            </p>
+                            <Button size="large" onClick={() => this.state.navigate('/rent')}>
+                                View Rents
+                            </Button>
+                        </StyledText>
+                    </StyledCol>
+                    <Col className="col-lg-6 col-md-6 col-sm-12">
+                        <div>
+                            <img style={{ width: '100%', height: 'auto' }} src={rentCarImage} alt="rentcar" />
+                        </div>
+                    </Col>
+                </Row>
                 <StatsRow>
                     <StatsColumn>
-                        <h1>3+</h1>
-                        <h2>Years in business</h2>
+                        <h1>First</h1>
+                        <h2>Year in business</h2>
                     </StatsColumn>
                     <StatsDivider />
                     <StatsColumn>
-                        <h1>3K+</h1>
+                        <h1>20+</h1>
                         <h2>Ads shared</h2>
                     </StatsColumn>
                     <StatsDivider />
                     <StatsColumn>
-                        <h1>20K+</h1>
+                        <h1>100+</h1>
                         <h2>Users</h2>
                     </StatsColumn>
                 </StatsRow>
@@ -327,17 +320,15 @@ class LandingPage extends Component<HomeState> {
                         </Col>
                         <StyledCol className="col-lg-6 col-md-6 col-sm-12">
                             <StyledText>
-                                <h1>Text Column Goes Here</h1>
-                                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                    sed do eiusmod tempor incididunt ut
-                                    labore et dolore magna aliqua
-                                    Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                                    sed do eiusmod tempor incididunt ut labore et dolore magna aliqua
+                                <h1>Explore Our Marketplace</h1>
+                                <p>
+                                    Discover a diverse range of vehicles available in our marketplace. From budget-friendly options to luxury cars, our platform provides a seamless and trustworthy buying experience. All listings are thoroughly verified to ensure accuracy and reliability, giving you the confidence to find and purchase your ideal car. Join our community of satisfied buyers and start exploring our marketplace today.
                                 </p>
-                                <Button size="large">
-                                    View Rents
+                                <Button size="large" onClick={() => this.state.navigate('/ads')}>
+                                    View Market
                                 </Button>
                             </StyledText>
+
                         </StyledCol>
                     </Row>
                 </Container>

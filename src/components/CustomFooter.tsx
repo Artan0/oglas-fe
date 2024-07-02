@@ -91,12 +91,16 @@ class CustomFooter extends Component {
         <FooterRow gutter={[16, 16]}>
           <FooterColumn lg={{ span: 10 }} md={{ span: 24 }} sm={{ span: 24 }}>
             <FooterHeading>Logo</FooterHeading>
-            <FooterText>Description about the company goes here.</FooterText>
+            <FooterText>Connecting buyers and sellers through our trusted marketplace platform.</FooterText>
           </FooterColumn>
           <FooterColumn lg={{ span: 4 }} md={{ span: 12 }} sm={{ span: 12 }}>
             <FooterHeading>Support Us!</FooterHeading>
-            <FooterMenu>
-              <p className='text-white mt-3'>Lorem ipsum dolor sit amet</p>
+            <FooterMenu style={{ backgroundColor: 'transparent' }}>
+              <FooterMenu style={{ backgroundColor: 'transparent' }}>
+                <FooterText >
+                  Join us in creating community for buying and selling
+                </FooterText>
+              </FooterMenu>
             </FooterMenu>
           </FooterColumn>
           <FooterColumn lg={{ span: 4 }} md={{ span: 12 }} sm={{ span: 12 }}>
